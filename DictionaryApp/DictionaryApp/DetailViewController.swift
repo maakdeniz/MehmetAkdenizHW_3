@@ -7,6 +7,7 @@
 
 import UIKit
 import DictionaryAPI
+import AVFoundation
 
 
 class DetailViewController: UIViewController {
@@ -20,6 +21,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var synonymsCollectionView: UICollectionView!
     
     var viewModel: DetailViewModel!
+    var player: AVPlayer?
+    var wordTypes: [String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +35,7 @@ class DetailViewController: UIViewController {
         //        synonymsCollectionView.delegate = self
         //        synonymsCollectionView.dataSource = self
         
-        // Fetch the word details
+        
         viewModel.fetchWordDetails { [weak self] result in
             switch result {
             case .failure(let error):
@@ -49,33 +52,47 @@ class DetailViewController: UIViewController {
         }
     }
     
+    
+    @IBAction func audioButtonTapped(_ sender: Any) {
+        guard let urlString = viewModel.word?.phonetics?.first?.audio,
+              let url = URL(string: urlString) else {
+            print("Invalid URL")
+            return
+        }
+        player = AVPlayer(url: url)
+        player?.play()
+    }
+    
     @IBAction func backButtonTapped(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
     }
     
+    
+    @IBAction func wortTypeChanged(_ sender: UISegmentedControl) {
+        let selectedWordType = wordTypes[sender.selectedSegmentIndex]
+        viewModel.filterMeanings(by: selectedWordType)
+        wordMeaningTableView.reloadData()
+    }
+    
     func updateUI(with word: Word) {
         print("Updating UI with word: \(word)")
-        
+
         wordLabel.text = word.word
         phoneticLabel.text = word.phonetic
         audioButton.isEnabled = word.phonetics != nil
-        print("wordLabel: \(String(describing: wordLabel))")  // Bu satır
-        print("phoneticLabel: \(String(describing: phoneticLabel))")  // Bu satır
-        print("wordTypeSegmentedControl: \(String(describing: wordTypeSegmentedControl))")  // Bu satır
-        
-        
-        
+
+        wordTypes = Array(Set(word.meanings.map { $0.partOfSpeech }))
         wordTypeSegmentedControl.removeAllSegments()
-        for (index, meaning) in word.meanings.enumerated() {
-            wordTypeSegmentedControl.insertSegment(withTitle: meaning.partOfSpeech, at: index, animated: false)
+        for (index, wordType) in wordTypes.enumerated() {
+            wordTypeSegmentedControl.insertSegment(withTitle: wordType, at: index, animated: false)
         }
         wordTypeSegmentedControl.selectedSegmentIndex = 0
+        if let selectedWordType = wordTypes.first {
+            viewModel.filterMeanings(by: selectedWordType)
+        }
         
         wordMeaningTableView.reloadData()
-        //synonymsCollectionView.reloadData()
     }
-    
-    // Other functions here...
 }
 
 extension DetailViewController: UITableViewDelegate, UITableViewDataSource {

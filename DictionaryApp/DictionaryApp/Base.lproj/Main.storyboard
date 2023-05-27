@@ -157,6 +157,9 @@
                                             <segment title="First"/>
                                             <segment title="Second"/>
                                         </segments>
+                                        <connections>
+                                            <action selector="wortTypeChanged:" destination="vPq-YY-Whe" eventType="valueChanged" id="eVv-q2-ykZ"/>
+                                        </connections>
                                     </segmentedControl>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yEU-bN-qX1">
                                         <rect key="frame" x="284" y="8" width="69" height="51"/>
@@ -166,6 +169,9 @@
                                         </constraints>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" image="pronaunciation"/>
+                                        <connections>
+                                            <action selector="audioButtonTapped:" destination="vPq-YY-Whe" eventType="touchUpInside" id="Gbb-3g-3qB"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemGray6Color"/>

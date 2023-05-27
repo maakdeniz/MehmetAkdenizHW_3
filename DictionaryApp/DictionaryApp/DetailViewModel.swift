@@ -11,6 +11,7 @@ import DictionaryAPI
 class DetailViewModel {
     var word: Word?
     var networkService: NetworkServiceProtocol
+    var filteredMeanings: [Meaning] = []
     var wordTypes: [String] {
         get {
             return word?.meanings.map { $0.partOfSpeech } ?? []
@@ -43,6 +44,10 @@ class DetailViewModel {
         return (word!.meanings[indexPath.section])
     }
     
+    func filterMeanings(by wordType: String) {
+           filteredMeanings = word?.meanings.filter { $0.partOfSpeech == wordType } ?? []
+       }
+    
     func fetchWordDetails(completion: @escaping (Result<Word, Error>) -> Void) {
         guard let word = word else { return }
         let urlString = "https://api.dictionaryapi.dev/api/v2/entries/en/\(String(describing: word.word))"
@@ -53,15 +58,15 @@ class DetailViewModel {
                 completion(.failure(error))
             } else if let data = data {
                 do {
-                    let wordDetails = try JSONDecoder().decode([Word].self, from: data) // Assuming the API returns a list
-                    self.word = wordDetails.first // get the first word from the list
+                    let wordDetails = try JSONDecoder().decode([Word].self, from: data)
+                    self.word = wordDetails.first
                     if let wordDetail = self.word {
                         completion(.success(wordDetail))
                     } else {
                         completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Word details not found"])))
                     }
                 } catch let error {
-                    print("Decoding error: \(error)") // This will print the decoding error, if any
+                    print("Decoding error: \(error)") 
                     completion(.failure(error))
                 }
             }

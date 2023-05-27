@@ -50,7 +50,7 @@ class WordViewController: UIViewController {
                     print(error)
                 case .success(let words):
                     guard let word = words.first else {
-                        // Handle the case where the word is not found
+                        
                         return
                     }
                     
