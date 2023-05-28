@@ -26,34 +26,36 @@ class DetailViewController: UIViewController {
     var wordTypes: [String] = []
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        let nib = UINib(nibName: "WordDetailTableViewCell", bundle: nil)
-        wordMeaningTableView.register(nib, forCellReuseIdentifier: WordDetailTableViewCell.identifier)
-                
-        wordMeaningTableView.delegate = self
-        wordMeaningTableView.dataSource = self
-        //        synonymsCollectionView.delegate = self
-        //        synonymsCollectionView.dataSource = self
-        filteredCollectionView.delegate = self
-        filteredCollectionView.dataSource = self
-        
-        
-        viewModel.fetchWordDetails { [weak self] result in
-            switch result {
-            case .failure(let error):
-                print("Failed to fetch word details: \(error)")
-                print(error)
-            case .success(let word):
+            super.viewDidLoad()
+            
+            let nib = UINib(nibName: "WordDetailTableViewCell", bundle: nil)
+            wordMeaningTableView.register(nib, forCellReuseIdentifier: WordDetailTableViewCell.identifier)
+                    
+            wordMeaningTableView.delegate = self
+            wordMeaningTableView.dataSource = self
+            filteredCollectionView.delegate = self
+            filteredCollectionView.dataSource = self
+            
+            // Whenever the word types are updated in ViewModel, we reload the data in the filtered collection view.
+            viewModel.onWordTypesUpdated = { [weak self] in
                 DispatchQueue.main.async {
-                    print("Successfully fetched word details: \(word)")
-                    self?.updateUI(with: word)
-                    self?.wordLabel.text = word.word
-                    self?.phoneticLabel.text = word.phonetic
+                    self?.filteredCollectionView.reloadData()
+                }
+            }
+            
+            viewModel.fetchWordDetails { [weak self] result in
+                switch result {
+                case .failure(let error):
+                    print("Failed to fetch word details: \(error)")
+                    print(error)
+                case .success(let word):
+                    DispatchQueue.main.async {
+                        print("Successfully fetched word details: \(word)")
+                        self?.updateUI(with: word)
+                    }
                 }
             }
         }
-    }
     
     
     @IBAction func audioButtonTapped(_ sender: Any) {
@@ -74,16 +76,10 @@ class DetailViewController: UIViewController {
  
     
     func updateUI(with word: Word) {
-        print("Updating UI with word: \(word)")
-
-        wordLabel.text = word.word
-        phoneticLabel.text = word.phonetic
-        audioButton.isEnabled = word.phonetics != nil
-
-        wordTypes = Array(Set(word.meanings?.compactMap { $0.partOfSpeech } ?? []))
-
-        
-        wordMeaningTableView.reloadData()
+        wordLabel.text = viewModel.wordText
+                phoneticLabel.text = viewModel.phoneticText
+                audioButton.isEnabled = (viewModel.word?.phonetics != nil)
+                wordMeaningTableView.reloadData()
     }
 }
 
@@ -116,12 +112,11 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
 extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // İçinde gösterilecek eleman sayısını döndürün, örneğin kelime türlerinin sayısı.
         return viewModel.wordTypes.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        // Hücreleri oluşturun ve ayarlayın.
+        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "filtiredCell", for: indexPath) as? FilteredCollectionViewCell else {
             fatalError("Cannot dequeue FilteredCollectionViewCell")
         }
@@ -144,7 +139,6 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         wordMeaningTableView.reloadData()
     }
 
+
 }
-
-
 
