@@ -5,6 +5,7 @@ class DetailViewModel {
     var word: Word?
     var networkService: NetworkServiceProtocol
     var originalMeanings: [Meaning]?
+    var filteredSynonyms: [Synonym] = []
     
     var isFiltering: Bool = false {
             didSet {
@@ -112,4 +113,31 @@ class DetailViewModel {
             }
         }
     }
+    
+    
+    func fetchFilteredSynonyms(word: String, completion: @escaping (Result<[Synonym], Error>) -> Void) {
+        guard let url = URL(string: "https://api.datamuse.com/words?rel_syn=\(word)") else {
+            completion(.failure(NSError(domain: "NetworkServiceError", code: -1, userInfo: [NSLocalizedDescriptionKey : "Invalid URL"])))
+            return
+        }
+        
+        networkService.get(url: url) { data, error in
+            if let error = error {
+                completion(.failure(error))
+            } else if let data = data {
+                let decoder = JSONDecoder()
+                if let synonymData = try? decoder.decode([Synonym].self, from: data) {
+                    self.filteredSynonyms = synonymData.sorted { ($0.score ?? 0) > ($1.score ?? 0) }.prefix(5).map { $0 }
+                    completion(.success(synonymData))
+                } else {
+                    completion(.failure(NSError(domain: "NetworkServiceError", code: -2, userInfo: [NSLocalizedDescriptionKey: "Unable to decode response"])))
+                }
+            } else {
+                completion(.failure(NSError(domain: "NetworkServiceError", code: -3, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
+            }
+        }
+    }
 }
+    
+    
+

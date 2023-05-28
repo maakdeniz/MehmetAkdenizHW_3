@@ -55,6 +55,20 @@ class DetailViewController: UIViewController {
                 }
             }
         }
+        
+        if let word = viewModel.wordText {
+            viewModel.fetchFilteredSynonyms(word: word) { [weak self] result in
+                switch result {
+                case .failure(let error):
+                    print("Failed to fetch synonyms: \(error)")
+                case .success(let synonyms):
+                    DispatchQueue.main.async {
+                        print("Successfully fetched synonyms: \(synonyms)")
+                        self?.synonymsCollectionView.reloadData()
+                    }
+                }
+            }
+        }
     }
     
     
@@ -108,49 +122,55 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
+extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if collectionView == synonymsCollectionView {
+            return viewModel.filteredSynonyms.count
+        }
         return viewModel.wordTypes.count
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "filtiredCell", for: indexPath) as? FilteredCollectionViewCell else {
-            fatalError("Cannot dequeue FilteredCollectionViewCell")
-        }
-        
-        let wordType = viewModel.wordTypes[indexPath.row]
-        cell.filtiredWordLabel.text = wordType
-
-        if wordType == "X" {
-            cell.filtiredWordLabel.backgroundColor = .blue
-            cell.removeFilterLabel.isHidden = false
-            cell.removeFilterTapAction = { [weak self] in
-                self?.viewModel.selectedWordType = nil
-                self?.wordMeaningTableView.reloadData()
-            }
+        if collectionView == synonymsCollectionView {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "synonymCell", for: indexPath) as! SynonymCollectionViewCell
+            let synonym = viewModel.filteredSynonyms[indexPath.row]
+            cell.synonymCellLabel.text = synonym.word
+            return cell
         } else {
-            cell.filtiredWordLabel.backgroundColor = .clear
-            cell.removeFilterLabel.isHidden = true
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "filtiredCell", for: indexPath) as? FilteredCollectionViewCell else {
+                fatalError("Cannot dequeue FilteredCollectionViewCell")
+            }
+            
+            let wordType = viewModel.wordTypes[indexPath.row]
+            cell.filtiredWordLabel.text = wordType
+
+            if wordType == "X" {
+                cell.filtiredWordLabel.backgroundColor = .blue
+                cell.removeFilterLabel.isHidden = false
+                cell.removeFilterTapAction = { [weak self] in
+                    self?.viewModel.selectedWordType = nil
+                    self?.wordMeaningTableView.reloadData()
+                }
+            } else {
+                cell.filtiredWordLabel.backgroundColor = .clear
+                cell.removeFilterLabel.isHidden = true
+            }
+
+            return cell
         }
-
-        return cell
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let wordType = viewModel.wordTypes[indexPath.item]
-        if wordType != "X" {
-            if !viewModel.selectedWordTypes.contains(wordType) {
+        if collectionView == filteredCollectionView {
+            let wordType = viewModel.wordTypes[indexPath.row]
+            if viewModel.selectedWordTypes.contains(wordType) {
+                viewModel.selectedWordTypes.removeAll(where: { $0 == wordType })
+            } else {
                 viewModel.selectedWordTypes.append(wordType)
             }
-        } else {
-            viewModel.selectedWordTypes.removeAll()
+            wordMeaningTableView.reloadData()
         }
-        wordMeaningTableView.reloadData()
     }
-
-
-    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = view.frame.width / 3

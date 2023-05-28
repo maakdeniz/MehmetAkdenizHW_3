@@ -40,3 +40,8 @@ public struct License: Codable {
     public let name: String
     public let url: String
 }
+
+public struct Synonym: Codable {
+    public let word: String?
+    public let score: Int?
+}
