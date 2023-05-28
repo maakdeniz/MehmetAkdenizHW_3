@@ -33,7 +33,7 @@ class WordDetailTableViewCell: UITableViewCell {
         super.prepareForReuse()
 
         exampleLabel.isHidden = false
-        // Diğer temizleme işlemleri...
+        
     }
 
     func configure(with meaning: Meaning) {

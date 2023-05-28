@@ -99,7 +99,7 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
         if let meaning = viewModel.meaningForIndexPath(indexPath) {
             cell.configure(with: meaning)
         } else {
-            // Eğer 'meaning' nil ise, bir hata durumu olduğunu kabul edin ve hücreyi varsayılan değerlerle ayarlayın.
+            
             cell.partOfSpeechLabel.text = "Unknown"
             cell.definitionLabel.text = "Unknown"
             cell.exampleLabel.text = "Unknown"
@@ -128,7 +128,7 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // Her hücre için boyut belirleyin. Bu örnek için her hücre genişliği ekran genişliğinin 1/3'ü ve yüksekliği 50 olacaktır.
+        
         let width = view.frame.width / 3
         return CGSize(width: width, height: 50)
     }
