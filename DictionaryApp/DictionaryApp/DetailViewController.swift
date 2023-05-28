@@ -15,10 +15,11 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var wordLabel: UILabel!
     @IBOutlet weak var phoneticLabel: UILabel!
     @IBOutlet weak var audioButton: UIButton!
-    @IBOutlet weak var wordTypeSegmentedControl: UISegmentedControl!
+    
     @IBOutlet weak var wordMeaningTableView: UITableView!
     @IBOutlet weak var synonymsLabel: UILabel!
     @IBOutlet weak var synonymsCollectionView: UICollectionView!
+    @IBOutlet weak var filteredCollectionView: UICollectionView!
     
     var viewModel: DetailViewModel!
     var player: AVPlayer?
@@ -29,11 +30,13 @@ class DetailViewController: UIViewController {
         
         let nib = UINib(nibName: "WordDetailTableViewCell", bundle: nil)
         wordMeaningTableView.register(nib, forCellReuseIdentifier: WordDetailTableViewCell.identifier)
-        
+                
         wordMeaningTableView.delegate = self
         wordMeaningTableView.dataSource = self
         //        synonymsCollectionView.delegate = self
         //        synonymsCollectionView.dataSource = self
+        filteredCollectionView.delegate = self
+        filteredCollectionView.dataSource = self
         
         
         viewModel.fetchWordDetails { [weak self] result in
@@ -68,11 +71,7 @@ class DetailViewController: UIViewController {
     }
     
     
-    @IBAction func wortTypeChanged(_ sender: UISegmentedControl) {
-        let selectedWordType = wordTypes[sender.selectedSegmentIndex]
-        viewModel.filterMeanings(by: selectedWordType)
-        wordMeaningTableView.reloadData()
-    }
+ 
     
     func updateUI(with word: Word) {
         print("Updating UI with word: \(word)")
@@ -81,15 +80,8 @@ class DetailViewController: UIViewController {
         phoneticLabel.text = word.phonetic
         audioButton.isEnabled = word.phonetics != nil
 
-        wordTypes = Array(Set(word.meanings.map { $0.partOfSpeech }))
-        wordTypeSegmentedControl.removeAllSegments()
-        for (index, wordType) in wordTypes.enumerated() {
-            wordTypeSegmentedControl.insertSegment(withTitle: wordType, at: index, animated: false)
-        }
-        wordTypeSegmentedControl.selectedSegmentIndex = 0
-        if let selectedWordType = wordTypes.first {
-            viewModel.filterMeanings(by: selectedWordType)
-        }
+        wordTypes = Array(Set(word.meanings?.compactMap { $0.partOfSpeech } ?? []))
+
         
         wordMeaningTableView.reloadData()
     }
@@ -106,15 +98,53 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: WordDetailTableViewCell.identifier, for: indexPath) as? WordDetailTableViewCell else {
-            fatalError("Cannot dequeue WordDetailTableViewCell")
+        let cell = tableView.dequeueReusableCell(withIdentifier: WordDetailTableViewCell.identifier, for: indexPath) as! WordDetailTableViewCell
+
+        if let meaning = viewModel.meaningForIndexPath(indexPath) {
+            cell.configure(with: meaning)
+        } else {
+            // Eğer 'meaning' nil ise, bir hata durumu olduğunu kabul edin ve hücreyi varsayılan değerlerle ayarlayın.
+            cell.partOfSpeechLabel.text = "Unknown"
+            cell.definitionLabel.text = "Unknown"
+            cell.exampleLabel.text = "Unknown"
         }
-        
-        let meaning = viewModel.meaningForIndexPath(indexPath)
-        cell.configure(with: meaning)
         
         return cell
     }
 }
+
+extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        // İçinde gösterilecek eleman sayısını döndürün, örneğin kelime türlerinin sayısı.
+        return viewModel.wordTypes.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        // Hücreleri oluşturun ve ayarlayın.
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "filtiredCell", for: indexPath) as? FilteredCollectionViewCell else {
+            fatalError("Cannot dequeue FilteredCollectionViewCell")
+        }
+        
+        let wordType = viewModel.wordTypes[indexPath.row]
+        cell.filtiredWordLabel.text = wordType
+
+        return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        // Her hücre için boyut belirleyin. Bu örnek için her hücre genişliği ekran genişliğinin 1/3'ü ve yüksekliği 50 olacaktır.
+        let width = view.frame.width / 3
+        return CGSize(width: width, height: 50)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let wordType = viewModel.wordTypes[indexPath.item]
+        viewModel.selectedWordType = wordType
+        wordMeaningTableView.reloadData()
+    }
+
+}
+
 
 

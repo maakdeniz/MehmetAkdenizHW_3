@@ -12,7 +12,7 @@ public struct Word: Codable {
     public let word: String
     public let phonetic: String?
     public let phonetics: [Phonetic]?
-    public let meanings: [Meaning]
+    public var meanings: [Meaning]?
     public let license: License?
     public let sourceUrls: [String]?
 }
@@ -23,7 +23,7 @@ public struct Phonetic: Codable {
 }
 
 public struct Meaning: Codable {
-    public let partOfSpeech: String
+    public let partOfSpeech: String?
     public let definitions: [Definition]
     public let synonyms: [String]?
     public let antonyms: [String]?

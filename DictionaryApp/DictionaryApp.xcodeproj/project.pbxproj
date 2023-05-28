@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B79BC1B2A228BF500EC3896 /* FilteredCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B79BC1A2A228BF500EC3896 /* FilteredCollectionViewCell.swift */; };
 		2B8CCBFD2A213DE40074CB4A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8CCBFC2A213DE40074CB4A /* AppDelegate.swift */; };
 		2B8CCBFF2A213DE40074CB4A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8CCBFE2A213DE40074CB4A /* SceneDelegate.swift */; };
 		2B8CCC012A213DE40074CB4A /* WordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8CCC002A213DE40074CB4A /* WordViewController.swift */; };
@@ -45,6 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2B79BC1A2A228BF500EC3896 /* FilteredCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredCollectionViewCell.swift; sourceTree = "<group>"; };
 		2B8CCBF92A213DE40074CB4A /* DictionaryApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DictionaryApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B8CCBFC2A213DE40074CB4A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2B8CCBFE2A213DE40074CB4A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 				2B8CCC0A2A213DE50074CB4A /* LaunchScreen.storyboard */,
 				2B8CCC0D2A213DE50074CB4A /* Info.plist */,
 				2B8CCC052A213DE40074CB4A /* DictionaryApp.xcdatamodeld */,
+				2B79BC1A2A228BF500EC3896 /* FilteredCollectionViewCell.swift */,
 			);
 			path = DictionaryApp;
 			sourceTree = "<group>";
@@ -307,6 +310,7 @@
 				2B8CCC072A213DE40074CB4A /* DictionaryApp.xcdatamodeld in Sources */,
 				2B8CCBFD2A213DE40074CB4A /* AppDelegate.swift in Sources */,
 				2B8CCBFF2A213DE40074CB4A /* SceneDelegate.swift in Sources */,
+				2B79BC1B2A228BF500EC3896 /* FilteredCollectionViewCell.swift in Sources */,
 				2B8CCC352A2144F90074CB4A /* WordViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
