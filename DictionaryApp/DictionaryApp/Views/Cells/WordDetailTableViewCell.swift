@@ -8,8 +8,6 @@
 import UIKit
 import DictionaryAPI
 
-
-
 class WordDetailTableViewCell: UITableViewCell {
 
     @IBOutlet weak var partOfSpeechLabel: UILabel!

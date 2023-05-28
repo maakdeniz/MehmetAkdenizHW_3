@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2B79BC1B2A228BF500EC3896 /* FilteredCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B79BC1A2A228BF500EC3896 /* FilteredCollectionViewCell.swift */; };
+		2B7CB17E2A23CC06004AF953 /* SynonymCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B7CB17D2A23CC06004AF953 /* SynonymCollectionViewCell.swift */; };
 		2B8CCBFD2A213DE40074CB4A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8CCBFC2A213DE40074CB4A /* AppDelegate.swift */; };
 		2B8CCBFF2A213DE40074CB4A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8CCBFE2A213DE40074CB4A /* SceneDelegate.swift */; };
 		2B8CCC012A213DE40074CB4A /* WordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8CCC002A213DE40074CB4A /* WordViewController.swift */; };
@@ -47,6 +48,7 @@
 
 /* Begin PBXFileReference section */
 		2B79BC1A2A228BF500EC3896 /* FilteredCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredCollectionViewCell.swift; sourceTree = "<group>"; };
+		2B7CB17D2A23CC06004AF953 /* SynonymCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynonymCollectionViewCell.swift; sourceTree = "<group>"; };
 		2B8CCBF92A213DE40074CB4A /* DictionaryApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DictionaryApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B8CCBFC2A213DE40074CB4A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2B8CCBFE2A213DE40074CB4A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				2B8CCC432A21559B0074CB4A /* WordDetailTableViewCell.xib */,
 				2B8CCC362A21450F0074CB4A /* WordTableViewCell.swift */,
 				2B79BC1A2A228BF500EC3896 /* FilteredCollectionViewCell.swift */,
+				2B7CB17D2A23CC06004AF953 /* SynonymCollectionViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -343,6 +346,7 @@
 				2B8CCBFD2A213DE40074CB4A /* AppDelegate.swift in Sources */,
 				2B8CCBFF2A213DE40074CB4A /* SceneDelegate.swift in Sources */,
 				2B79BC1B2A228BF500EC3896 /* FilteredCollectionViewCell.swift in Sources */,
+				2B7CB17E2A23CC06004AF953 /* SynonymCollectionViewCell.swift in Sources */,
 				2B8CCC352A2144F90074CB4A /* WordViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

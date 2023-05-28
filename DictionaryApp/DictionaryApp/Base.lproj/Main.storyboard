@@ -251,7 +251,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="N68-lH-dnj">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="synonymCell" id="N68-lH-dnj" customClass="SynonymCollectionViewCell" customModule="DictionaryApp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="93" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Wg0-RP-VlT">
@@ -273,6 +273,9 @@
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="93" height="40"/>
+                                        <connections>
+                                            <outlet property="synonymCellLabel" destination="Mqv-gm-Puc" id="z5W-1r-DFh"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>

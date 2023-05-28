@@ -17,7 +17,6 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var audioButton: UIButton!
     
     @IBOutlet weak var wordMeaningTableView: UITableView!
-    @IBOutlet weak var synonymsLabel: UILabel!
     @IBOutlet weak var synonymsCollectionView: UICollectionView!
     @IBOutlet weak var filteredCollectionView: UICollectionView!
     
@@ -35,6 +34,8 @@ class DetailViewController: UIViewController {
         wordMeaningTableView.dataSource = self
         filteredCollectionView.delegate = self
         filteredCollectionView.dataSource = self
+        synonymsCollectionView.delegate = self
+        synonymsCollectionView.dataSource = self
         
         viewModel.onWordTypesUpdated = { [weak self] in
             DispatchQueue.main.async {
