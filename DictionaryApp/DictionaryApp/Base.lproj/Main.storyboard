@@ -142,7 +142,7 @@
                                 <subviews>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="cp3-gQ-I0E">
                                         <rect key="frame" x="6" y="71" width="349" height="81"/>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <color key="backgroundColor" systemColor="systemGray6Color"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="atx-TL-HNY">
                                             <size key="itemSize" width="80" height="40"/>
                                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -164,14 +164,28 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
+                                                    <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="bottom" secondItem="wuo-GT-k6z" secondAttribute="bottom" constant="8" id="E3a-o4-Sux"/>
                                                         <constraint firstAttribute="trailing" secondItem="wuo-GT-k6z" secondAttribute="trailing" constant="8" id="Zif-DO-ifM"/>
                                                         <constraint firstItem="wuo-GT-k6z" firstAttribute="leading" secondItem="NcS-fY-A9I" secondAttribute="leading" constant="8" id="eoD-Im-PgY"/>
                                                         <constraint firstItem="wuo-GT-k6z" firstAttribute="top" secondItem="NcS-fY-A9I" secondAttribute="top" constant="8" id="ey9-Ek-vMq"/>
                                                     </constraints>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                            <integer key="value" value="20"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                    </userDefinedRuntimeAttributes>
                                                 </collectionViewCellContentView>
+                                                <color key="backgroundColor" systemColor="systemGray6Color"/>
                                                 <size key="customSize" width="80" height="40"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="20"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <outlet property="filtiredWordLabel" destination="wuo-GT-k6z" id="9VQ-Ia-OQr"/>
                                                 </connections>

@@ -163,8 +163,8 @@
 			isa = PBXGroup;
 			children = (
 				2B7CB17B2A2385EC004AF953 /* Helpers */,
-				2B7CB17A2A2385E4004AF953 /* Views */,
 				2B7CB1792A2385D2004AF953 /* ViewModels */,
+				2B7CB17A2A2385E4004AF953 /* Views */,
 				2B8CCC022A213DE40074CB4A /* Main.storyboard */,
 				2B8CCC082A213DE50074CB4A /* Assets.xcassets */,
 				2B8CCC0A2A213DE50074CB4A /* LaunchScreen.storyboard */,

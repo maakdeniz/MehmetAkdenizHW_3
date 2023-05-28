@@ -26,36 +26,35 @@ class DetailViewController: UIViewController {
     var wordTypes: [String] = []
     
     override func viewDidLoad() {
-            super.viewDidLoad()
-            
-            let nib = UINib(nibName: "WordDetailTableViewCell", bundle: nil)
-            wordMeaningTableView.register(nib, forCellReuseIdentifier: WordDetailTableViewCell.identifier)
-                    
-            wordMeaningTableView.delegate = self
-            wordMeaningTableView.dataSource = self
-            filteredCollectionView.delegate = self
-            filteredCollectionView.dataSource = self
-            
-            
-            viewModel.onWordTypesUpdated = { [weak self] in
-                DispatchQueue.main.async {
-                    self?.filteredCollectionView.reloadData()
-                }
+        super.viewDidLoad()
+        
+        let nib = UINib(nibName: "WordDetailTableViewCell", bundle: nil)
+        wordMeaningTableView.register(nib, forCellReuseIdentifier: WordDetailTableViewCell.identifier)
+        
+        wordMeaningTableView.delegate = self
+        wordMeaningTableView.dataSource = self
+        filteredCollectionView.delegate = self
+        filteredCollectionView.dataSource = self
+        
+        viewModel.onWordTypesUpdated = { [weak self] in
+            DispatchQueue.main.async {
+                self?.filteredCollectionView.reloadData()
             }
-            
-            viewModel.fetchWordDetails { [weak self] result in
-                switch result {
-                case .failure(let error):
-                    print("Failed to fetch word details: \(error)")
-                    print(error)
-                case .success(let word):
-                    DispatchQueue.main.async {
-                        print("Successfully fetched word details: \(word)")
-                        self?.updateUI(with: word)
-                    }
+        }
+        
+        viewModel.fetchWordDetails { [weak self] result in
+            switch result {
+            case .failure(let error):
+                print("Failed to fetch word details: \(error)")
+                print(error)
+            case .success(let word):
+                DispatchQueue.main.async {
+                    print("Successfully fetched word details: \(word)")
+                    self?.updateUI(with: word)
                 }
             }
         }
+    }
     
     
     @IBAction func audioButtonTapped(_ sender: Any) {
@@ -73,13 +72,13 @@ class DetailViewController: UIViewController {
     }
     
     
- 
+    
     
     func updateUI(with word: Word) {
         wordLabel.text = viewModel.wordText
-                phoneticLabel.text = viewModel.phoneticText
-                audioButton.isEnabled = (viewModel.word?.phonetics != nil)
-                wordMeaningTableView.reloadData()
+        phoneticLabel.text = viewModel.phoneticText
+        audioButton.isEnabled = (viewModel.word?.phonetics != nil)
+        wordMeaningTableView.reloadData()
     }
 }
 
@@ -95,11 +94,10 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WordDetailTableViewCell.identifier, for: indexPath) as! WordDetailTableViewCell
-
+        
         if let meaning = viewModel.meaningForIndexPath(indexPath) {
             cell.configure(with: meaning)
         } else {
-            
             cell.partOfSpeechLabel.text = "Unknown"
             cell.definitionLabel.text = "Unknown"
             cell.exampleLabel.text = "Unknown"
@@ -110,13 +108,12 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.wordTypes.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "filtiredCell", for: indexPath) as? FilteredCollectionViewCell else {
             fatalError("Cannot dequeue FilteredCollectionViewCell")
         }
@@ -124,21 +121,38 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         let wordType = viewModel.wordTypes[indexPath.row]
         cell.filtiredWordLabel.text = wordType
 
+        if wordType == "X" {
+            cell.filtiredWordLabel.backgroundColor = .blue
+            cell.removeFilterLabel.isHidden = false
+            cell.removeFilterTapAction = { [weak self] in
+                self?.viewModel.selectedWordType = nil
+                self?.wordMeaningTableView.reloadData()
+            }
+        } else {
+            cell.filtiredWordLabel.backgroundColor = .clear
+            cell.removeFilterLabel.isHidden = true
+        }
+
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        let width = view.frame.width / 3
-        return CGSize(width: width, height: 50)
-    }
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let wordType = viewModel.wordTypes[indexPath.item]
-        viewModel.selectedWordType = wordType
+        if wordType != "X" {
+            if !viewModel.selectedWordTypes.contains(wordType) {
+                viewModel.selectedWordTypes.append(wordType)
+            }
+        } else {
+            viewModel.selectedWordTypes.removeAll()
+        }
         wordMeaningTableView.reloadData()
     }
 
 
+    
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = view.frame.width / 3
+        return CGSize(width: width, height: 50)
+    }
 }
-
