@@ -36,7 +36,7 @@ class DetailViewController: UIViewController {
             filteredCollectionView.delegate = self
             filteredCollectionView.dataSource = self
             
-            // Whenever the word types are updated in ViewModel, we reload the data in the filtered collection view.
+            
             viewModel.onWordTypesUpdated = { [weak self] in
                 DispatchQueue.main.async {
                     self?.filteredCollectionView.reloadData()

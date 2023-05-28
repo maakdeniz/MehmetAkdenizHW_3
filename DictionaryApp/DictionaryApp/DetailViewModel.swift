@@ -41,6 +41,7 @@ class DetailViewModel {
             self.originalMeanings = word.meanings
             self.filteredMeanings = originalMeanings
         }
+    
 
     func numberOfSections() -> Int {
         return filteredMeanings?.count ?? 0
