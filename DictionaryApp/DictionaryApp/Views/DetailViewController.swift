@@ -164,6 +164,7 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
                 cell.removeFilterLabel.isHidden = false
                 cell.removeFilterTapAction = { [weak self] in
                     self?.viewModel.selectedWordType = nil
+                    self?.viewModel.selectedWordTypes = []
                     self?.wordMeaningTableView.reloadData()
                 }
             } else {
