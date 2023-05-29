@@ -86,9 +86,6 @@ class DetailViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-    
-    
-    
     func updateUI(with word: Word) {
         wordLabel.text = viewModel.wordText
         phoneticLabel.text = viewModel.phoneticText
@@ -100,24 +97,19 @@ class DetailViewController: UIViewController {
 extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.numberOfSections()
+        return viewModel.wordTypes.count
     }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfRowsInSection(section)
+        let partOfSpeech = viewModel.wordTypes[section]
+        return viewModel.groupedMeanings[partOfSpeech]?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WordDetailTableViewCell.identifier, for: indexPath) as! WordDetailTableViewCell
-        
         if let meaning = viewModel.meaningForIndexPath(indexPath) {
-            cell.configure(with: meaning)
-        } else {
-            cell.partOfSpeechLabel.text = "Unknown"
-            cell.definitionLabel.text = "Unknown"
-            cell.exampleLabel.text = "Unknown"
+            let count = viewModel.meaningIndexForType(meaning.partOfSpeech ?? "", indexPath: indexPath)
+            cell.configure(with: meaning, count: count)
         }
-        
         return cell
     }
 }
@@ -129,7 +121,6 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         }
         return viewModel.wordTypes.count
     }
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == synonymsCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "synonymCell", for: indexPath) as! SynonymCollectionViewCell
@@ -159,7 +150,6 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
             return cell
         }
     }
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == filteredCollectionView {
             let wordType = viewModel.wordTypes[indexPath.row]
@@ -168,10 +158,10 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
             } else {
                 viewModel.selectedWordTypes.append(wordType)
             }
-            wordMeaningTableView.reloadData()
+            self.wordMeaningTableView.reloadData()
+            
         }
     }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = view.frame.width / 3
         return CGSize(width: width, height: 50)

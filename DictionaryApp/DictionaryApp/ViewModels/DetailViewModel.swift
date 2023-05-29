@@ -6,6 +6,11 @@ class DetailViewModel {
     var networkService: NetworkServiceProtocol
     var originalMeanings: [Meaning]?
     var filteredSynonyms: [Synonym] = []
+    var meaningCounts: [String: Int] = [:]
+    var wordTypes: [String] = []
+    var filteredMeanings: [Meaning]?
+    var groupedMeanings: [String: [Meaning]] = [:]
+    var meaningIndices: [String: Int] = [:]
     
     var isFiltering: Bool = false {
             didSet {
@@ -21,20 +26,20 @@ class DetailViewModel {
                 onWordTypesUpdated?()
             }
         }
-    
     var selectedWordType: String? {
             didSet {
                 if let selectedWordType = selectedWordType {
                     isFiltering = true
                     filteredMeanings = originalMeanings?.filter { $0.partOfSpeech == selectedWordType }
+                    word?.meanings = filteredMeanings
                 } else {
                     isFiltering = false
                     filteredMeanings = originalMeanings
+                    word?.meanings = filteredMeanings
                 }
-                word?.meanings = filteredMeanings
+                onWordTypesUpdated?()
             }
         }
-    
     var selectedWordTypes: [String] = [] {
         didSet {
             if !selectedWordTypes.isEmpty {
@@ -47,42 +52,47 @@ class DetailViewModel {
             word?.meanings = filteredMeanings
         }
     }
-    var filteredMeanings: [Meaning]?
+    
     var onWordTypesUpdated: (() -> Void)?
-
-    var wordTypes: [String] = []
-
     var wordText: String? {
         return word?.word
     }
-
     var phoneticText: String? {
         return word?.phonetic
     }
-
     init(word: Word, networkService: NetworkServiceProtocol) {
         self.word = word
         self.networkService = networkService
-        self.originalMeanings = word.meanings
+        self.originalMeanings = word.meanings?.sorted(by: { $0.partOfSpeech ?? "" < $1.partOfSpeech ?? "" })
         self.filteredMeanings = originalMeanings
+        
+        if let meanings = word.meanings {
+            let grouped = Dictionary(grouping: meanings, by: { $0.partOfSpeech ?? "" })
+            self.groupedMeanings = grouped
+        }
     }
-
     func numberOfSections() -> Int {
         return filteredMeanings?.count ?? 0
     }
-
     func numberOfRowsInSection(_ section: Int) -> Int {
         return 1
     }
-
     func meaningForIndexPath(_ indexPath: IndexPath) -> Meaning? {
-        guard let filteredMeanings = filteredMeanings else {
-            print("filteredMeanings is nil")
-            return nil
-        }
-        return filteredMeanings[indexPath.section]
-    }
+        
+        let partOfSpeech = wordTypes[indexPath.section]
 
+        
+        let meanings = groupedMeanings[partOfSpeech]
+
+        
+        let meaning = meanings?[indexPath.row]
+
+        return meaning
+    }
+    func meaningIndexForType(_ type: String, indexPath: IndexPath) -> Int {
+          
+          return indexPath.row + 1
+      }
     func fetchWordDetails(completion: @escaping (Result<Word, Error>) -> Void) {
         guard let word = word else { return }
         let urlString = "https://api.dictionaryapi.dev/api/v2/entries/en/\(String(describing: word.word))"
@@ -113,7 +123,6 @@ class DetailViewModel {
             }
         }
     }
-    
     
     func fetchFilteredSynonyms(word: String, completion: @escaping (Result<[Synonym], Error>) -> Void) {
         guard let url = URL(string: "https://api.datamuse.com/words?rel_syn=\(word)") else {
