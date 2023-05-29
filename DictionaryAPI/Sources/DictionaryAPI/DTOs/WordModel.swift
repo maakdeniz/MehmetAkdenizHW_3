@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public struct Word: Codable {
     public let word: String
     public let phonetic: String?

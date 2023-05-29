@@ -10,32 +10,34 @@ import DictionaryAPI
 
 class WordViewController: UIViewController {
     
-    
+    //MARK: - IBOutles
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var wordTableView: UITableView!
-    
+    //MARK: - Variables Definatios
     private var viewModel: WordViewModel!
     private var searchHistory: [Word] = []
-    
     private var defaultsService = DefaultsService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
         searchHistory = defaultsService.getSearchHistory() ?? []
-        
-        
-        wordTableView.dataSource = self
-        wordTableView.delegate = self
-        searchBar.delegate = self
+        configure()
         viewModel = WordViewModel(networkService: NetworkService())
     }
     
+
+    //MARK: - IBAction Func.
     @IBAction func searchButtonTapped(_ sender: UIButton) {
-        searchWordAndNavigateIfNeeded()
+        searchWord()
     }
-    private func searchWordAndNavigateIfNeeded() {
+    
+    //MARK: - Functions Definations
+    func configure() {
+        wordTableView.dataSource = self
+        wordTableView.delegate = self
+        searchBar.delegate = self
+    }
+    private func searchWord() {
         guard let searchText = searchBar.text, !searchText.isEmpty else {
             return
         }
@@ -58,10 +60,7 @@ class WordViewController: UIViewController {
                     if self?.searchHistory.count ?? 0 > 5 {
                         self?.searchHistory.removeFirst()
                     }
-                    
                     self?.defaultsService.saveSearchHistory(self?.searchHistory ?? [])
-                    
-                    
                     self?.wordTableView.reloadData()
                     self?.navigateToDetailViewController(with: word)
                 }
@@ -71,19 +70,20 @@ class WordViewController: UIViewController {
     
     private func navigateToDetailViewController(with word: Word) {
         let detailViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
-        let detailViewModel = DetailViewModel(word: word, networkService: NetworkService())
+        let detailViewModel = DetailViewModel(word: word,
+                                              networkService: NetworkService())
         detailViewController.viewModel = detailViewModel
         detailViewController.modalPresentationStyle = .fullScreen
         self.present(detailViewController, animated: true, completion: nil)
     }
 }
-
+//MARK: - Searchbar Extesion
 extension WordViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchWordAndNavigateIfNeeded()
+        searchWord()
     }
 }
-
+//MARK: - Tableview Extesion
 extension WordViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searchHistory.count
@@ -97,7 +97,7 @@ extension WordViewController: UITableViewDelegate, UITableViewDataSource {
         cell.rightButton.addTarget(self, action: #selector(goToDetails), for: .touchUpInside)
         return cell
     }
-    
+    //MARK: - objc functions
     @objc func goToDetails(_ sender: UIButton) {
         let word = searchHistory[sender.tag]
         navigateToDetailViewController(with: word)

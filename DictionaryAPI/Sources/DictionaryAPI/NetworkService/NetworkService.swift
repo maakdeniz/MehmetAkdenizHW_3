@@ -13,7 +13,6 @@ public protocol NetworkServiceProtocol {
 
 open class NetworkService: NetworkServiceProtocol {
     
-    
     public init () { }
     
     public func get(url: URL, completion: @escaping (Data?,Error?) -> Void) {

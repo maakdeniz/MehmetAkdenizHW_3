@@ -23,9 +23,7 @@ class WordDetailTableViewCell: UITableViewCell {
     }
     override func prepareForReuse() {
         super.prepareForReuse()
-
-        exampleLabel.isHidden = false
-        
+        //exampleLabel.isHidden = false
     }
     func configure(with meaning: Meaning, count: Int) {
         if let type = meaning.partOfSpeech {
@@ -36,7 +34,7 @@ class WordDetailTableViewCell: UITableViewCell {
 
         if let firstDefinition = meaning.definitions.first {
             definitionLabel.text = firstDefinition.definition
-            exampleLabel.text = firstDefinition.example
+            exampleLabel.text = "Example\n" + (firstDefinition.example ?? "") 
             exampleLabel.isHidden = firstDefinition.example == nil
         } else {
             definitionLabel.text = ""

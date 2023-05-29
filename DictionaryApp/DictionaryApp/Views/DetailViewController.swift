@@ -12,6 +12,7 @@ import AVFoundation
 
 class DetailViewController: UIViewController {
     
+    //MARK: - IBOutlets
     @IBOutlet weak var wordLabel: UILabel!
     @IBOutlet weak var phoneticLabel: UILabel!
     @IBOutlet weak var audioButton: UIButton!
@@ -24,19 +25,16 @@ class DetailViewController: UIViewController {
     var player: AVPlayer?
     var wordTypes: [String] = []
     
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
         tableviewRegister()
-        asyncOperations()
+        configureViewModel()
     
     }
     
 
-    
-    
+    //MARK: - IBAction Functions
     @IBAction func audioButtonTapped(_ sender: Any) {
         guard let urlString = viewModel.word?.phonetics?.first?.audio,
               let url = URL(string: urlString) else {
@@ -51,6 +49,7 @@ class DetailViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
+    //MARK: Definations Functions
     func configure(){
         wordMeaningTableView.delegate = self
         wordMeaningTableView.dataSource = self
@@ -66,10 +65,15 @@ class DetailViewController: UIViewController {
         wordMeaningTableView.register(nib, forCellReuseIdentifier: WordDetailTableViewCell.identifier)
     }
     
-    func asyncOperations() {
+    func configureViewModel() {
         viewModel.onWordTypesUpdated = { [weak self] in
             DispatchQueue.main.async {
                 self?.filteredCollectionView.reloadData()
+            }
+        }
+        viewModel.onSelectedWordTypesUpdated = {[weak self] in
+            DispatchQueue.main.async {
+                self?.wordMeaningTableView.reloadData()
             }
         }
         
@@ -80,7 +84,7 @@ class DetailViewController: UIViewController {
                 print(error)
             case .success(let word):
                 DispatchQueue.main.async {
-                    print("Successfully fetched word details: \(word)")
+                    //print("Successfully fetched word details: \(word)")
                     self?.updateUI(with: word)
                 }
             }
@@ -91,9 +95,9 @@ class DetailViewController: UIViewController {
                 switch result {
                 case .failure(let error):
                     print("Failed to fetch synonyms: \(error)")
-                case .success(let synonyms):
+                case .success(_):
                     DispatchQueue.main.async {
-                        print("Successfully fetched synonyms: \(synonyms)")
+                        //print("Successfully fetched synonyms: \(synonyms)")
                         self?.synonymsCollectionView.reloadData()
                     }
                 }
@@ -109,6 +113,7 @@ class DetailViewController: UIViewController {
     }
 }
 
+//MARK: - Tableview Extesion
 extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -128,7 +133,7 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 }
-
+//MARK: - Tableview Extesion
 extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == synonymsCollectionView {
@@ -141,6 +146,8 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "synonymCell", for: indexPath) as! SynonymCollectionViewCell
             let synonym = viewModel.filteredSynonyms[indexPath.row]
             cell.synonymCellLabel.text = synonym.word
+            cell.layer.borderWidth = 1.0
+            cell.layer.borderColor = UIColor.systemGray.cgColor
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "filtiredCell", for: indexPath) as? FilteredCollectionViewCell else {
@@ -149,9 +156,11 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
             
             let wordType = viewModel.wordTypes[indexPath.row]
             cell.filtiredWordLabel.text = wordType
+            cell.filtiredWordLabel.backgroundColor = .systemBlue
+            
 
             if wordType == "X" {
-                cell.filtiredWordLabel.backgroundColor = .blue
+                cell.filtiredWordLabel.backgroundColor = .clear
                 cell.removeFilterLabel.isHidden = false
                 cell.removeFilterTapAction = { [weak self] in
                     self?.viewModel.selectedWordType = nil
@@ -160,6 +169,8 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
             } else {
                 cell.filtiredWordLabel.backgroundColor = .clear
                 cell.removeFilterLabel.isHidden = true
+                cell.layer.borderWidth = 1.0
+                cell.layer.borderColor = UIColor.systemGray.cgColor
             }
 
             return cell
@@ -168,18 +179,24 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == filteredCollectionView {
             let wordType = viewModel.wordTypes[indexPath.row]
-            if viewModel.selectedWordTypes.contains(wordType) {
-                viewModel.selectedWordTypes.removeAll(where: { $0 == wordType })
+            if wordType == "X" {
+                viewModel.selectedWordTypes.removeAll()
+                viewModel.isFiltering = false
+                viewModel.onSelectedWordTypesUpdated?()
             } else {
-                viewModel.selectedWordTypes.append(wordType)
+                if let index = viewModel.selectedWordTypes.firstIndex(of: wordType) {
+                    viewModel.selectedWordTypes.remove(at: index)
+                    if viewModel.selectedWordTypes.isEmpty {
+                        viewModel.isFiltering = false
+                    }
+                } else {
+                    viewModel.selectedWordTypes.append(wordType)
+                    viewModel.isFiltering = true
+                }
+                viewModel.onSelectedWordTypesUpdated?()
             }
-            DispatchQueue.main.async {
-                self.wordMeaningTableView.reloadData()
-            }
-            print("TableView güncellenmiyor")
         }
     }
-
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = view.frame.width / 3
         return CGSize(width: width, height: 50)

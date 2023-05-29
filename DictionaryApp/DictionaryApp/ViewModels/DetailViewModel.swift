@@ -2,6 +2,7 @@ import Foundation
 import DictionaryAPI
 
 class DetailViewModel {
+    //MARK: - Definations Variables
     var word: Word?
     var networkService: NetworkServiceProtocol
     var originalMeanings: [Meaning]?
@@ -16,7 +17,7 @@ class DetailViewModel {
             didSet {
                 if isFiltering {
                     if !wordTypes.contains("X") {
-                        wordTypes.insert("X", at: 0) // İlk konuma ekler
+                        wordTypes.insert("X", at: 0)
                     }
                 } else {
                     if let index = wordTypes.firstIndex(of: "X") {
@@ -24,42 +25,54 @@ class DetailViewModel {
                     }
                 }
                 onWordTypesUpdated?()
+                onSelectedWordTypesUpdated?()
             }
         }
     var selectedWordType: String? {
-            didSet {
-                if let selectedWordType = selectedWordType {
-                    isFiltering = true
-                    filteredMeanings = originalMeanings?.filter { $0.partOfSpeech == selectedWordType }
-                    word?.meanings = filteredMeanings
-                } else {
-                    isFiltering = false
-                    filteredMeanings = originalMeanings
-                    word?.meanings = filteredMeanings
-                }
-                onWordTypesUpdated?()
-            }
-        }
-    var selectedWordTypes: [String] = [] {
-            didSet {
-                if !selectedWordTypes.isEmpty {
-                    isFiltering = true
-                    filteredMeanings = originalMeanings?.filter { selectedWordTypes.contains($0.partOfSpeech ?? "") }
-                } else {
-                    isFiltering = false
-                    filteredMeanings = originalMeanings
-                }
+        didSet {
+            if let selectedWordType = selectedWordType {
+                isFiltering = true
+                filteredMeanings = originalMeanings?.filter { $0.partOfSpeech == selectedWordType }
+                word?.meanings = filteredMeanings
+            } else {
+                isFiltering = false
+                filteredMeanings = originalMeanings
                 word?.meanings = filteredMeanings
             }
+            onSelectedWordTypesUpdated?()
         }
+    }
+    var selectedWordTypes: [String] = [] {
+        didSet {
+            if !selectedWordTypes.isEmpty {
+                isFiltering = true
+                filteredMeanings = originalMeanings?.filter { selectedWordTypes.contains($0.partOfSpeech ?? "") }
+            } else {
+                isFiltering = false
+                filteredMeanings = originalMeanings
+            }
+            word?.meanings = filteredMeanings
+
+            if let meanings = word?.meanings {
+                let grouped = Dictionary(grouping: meanings, by: { $0.partOfSpeech ?? "" })
+                self.groupedMeanings = grouped
+            }
+            onSelectedWordTypesUpdated?()  
+        }
+    }
     
-    var onWordTypesUpdated: (() -> Void)?
     var wordText: String? {
         return word?.word
     }
     var phoneticText: String? {
         return word?.phonetic
     }
+
+//MARK: - Closures
+    var onSelectedWordTypesUpdated: (() -> Void)?
+    var onWordTypesUpdated: (() -> Void)?
+    
+//MARK: - Initiliazer
     init(word: Word, networkService: NetworkServiceProtocol) {
         self.word = word
         self.networkService = networkService
@@ -71,6 +84,7 @@ class DetailViewModel {
             self.groupedMeanings = grouped
         }
     }
+    
     func numberOfSections() -> Int {
         return filteredMeanings?.count ?? 0
     }
@@ -78,16 +92,17 @@ class DetailViewModel {
         return 1
     }
     func meaningForIndexPath(_ indexPath: IndexPath) -> Meaning? {
-        
         let partOfSpeech = wordTypes[indexPath.section]
         let meanings = groupedMeanings[partOfSpeech]
         let meaning = meanings?[indexPath.row]
         return meaning
     }
     func meaningIndexForType(_ type: String, indexPath: IndexPath) -> Int {
-          
           return indexPath.row + 1
       }
+    
+    
+    //MARK: - Network Functions
     func fetchWordDetails(completion: @escaping (Result<Word, Error>) -> Void) {
         guard let word = word else { return }
         let urlString = "https://api.dictionaryapi.dev/api/v2/entries/en/\(String(describing: word.word))"
@@ -142,6 +157,3 @@ class DetailViewModel {
         }
     }
 }
-    
-    
-
