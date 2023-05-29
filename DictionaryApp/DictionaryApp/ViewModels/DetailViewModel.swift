@@ -16,7 +16,7 @@ class DetailViewModel {
             didSet {
                 if isFiltering {
                     if !wordTypes.contains("X") {
-                        wordTypes.insert("X", at: 0)
+                        wordTypes.insert("X", at: 0) // İlk konuma ekler
                     }
                 } else {
                     if let index = wordTypes.firstIndex(of: "X") {
@@ -41,17 +41,17 @@ class DetailViewModel {
             }
         }
     var selectedWordTypes: [String] = [] {
-        didSet {
-            if !selectedWordTypes.isEmpty {
-                isFiltering = true
-                filteredMeanings = originalMeanings?.filter { selectedWordTypes.contains($0.partOfSpeech ?? "") }
-            } else {
-                isFiltering = false
-                filteredMeanings = originalMeanings
+            didSet {
+                if !selectedWordTypes.isEmpty {
+                    isFiltering = true
+                    filteredMeanings = originalMeanings?.filter { selectedWordTypes.contains($0.partOfSpeech ?? "") }
+                } else {
+                    isFiltering = false
+                    filteredMeanings = originalMeanings
+                }
+                word?.meanings = filteredMeanings
             }
-            word?.meanings = filteredMeanings
         }
-    }
     
     var onWordTypesUpdated: (() -> Void)?
     var wordText: String? {
@@ -80,13 +80,8 @@ class DetailViewModel {
     func meaningForIndexPath(_ indexPath: IndexPath) -> Meaning? {
         
         let partOfSpeech = wordTypes[indexPath.section]
-
-        
         let meanings = groupedMeanings[partOfSpeech]
-
-        
         let meaning = meanings?[indexPath.row]
-
         return meaning
     }
     func meaningIndexForType(_ type: String, indexPath: IndexPath) -> Int {

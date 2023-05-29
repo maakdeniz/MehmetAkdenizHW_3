@@ -24,19 +24,49 @@ class DetailViewController: UIViewController {
     var player: AVPlayer?
     var wordTypes: [String] = []
     
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let nib = UINib(nibName: "WordDetailTableViewCell", bundle: nil)
-        wordMeaningTableView.register(nib, forCellReuseIdentifier: WordDetailTableViewCell.identifier)
-        
+        configure()
+        tableviewRegister()
+        asyncOperations()
+    
+    }
+    
+
+    
+    
+    @IBAction func audioButtonTapped(_ sender: Any) {
+        guard let urlString = viewModel.word?.phonetics?.first?.audio,
+              let url = URL(string: urlString) else {
+            print("Invalid URL")
+            return
+        }
+        player = AVPlayer(url: url)
+        player?.play()
+    }
+    
+    @IBAction func backButtonTapped(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    func configure(){
         wordMeaningTableView.delegate = self
         wordMeaningTableView.dataSource = self
         filteredCollectionView.delegate = self
         filteredCollectionView.dataSource = self
         synonymsCollectionView.delegate = self
         synonymsCollectionView.dataSource = self
-        
+
+    }
+    
+    func tableviewRegister() {
+        let nib = UINib(nibName: "WordDetailTableViewCell", bundle: nil)
+        wordMeaningTableView.register(nib, forCellReuseIdentifier: WordDetailTableViewCell.identifier)
+    }
+    
+    func asyncOperations() {
         viewModel.onWordTypesUpdated = { [weak self] in
             DispatchQueue.main.async {
                 self?.filteredCollectionView.reloadData()
@@ -69,21 +99,6 @@ class DetailViewController: UIViewController {
                 }
             }
         }
-    }
-    
-    
-    @IBAction func audioButtonTapped(_ sender: Any) {
-        guard let urlString = viewModel.word?.phonetics?.first?.audio,
-              let url = URL(string: urlString) else {
-            print("Invalid URL")
-            return
-        }
-        player = AVPlayer(url: url)
-        player?.play()
-    }
-    
-    @IBAction func backButtonTapped(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
     }
     
     func updateUI(with word: Word) {
@@ -158,10 +173,13 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
             } else {
                 viewModel.selectedWordTypes.append(wordType)
             }
-            self.wordMeaningTableView.reloadData()
-            
+            DispatchQueue.main.async {
+                self.wordMeaningTableView.reloadData()
+            }
+            print("TableView güncellenmiyor")
         }
     }
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = view.frame.width / 3
         return CGSize(width: width, height: 50)

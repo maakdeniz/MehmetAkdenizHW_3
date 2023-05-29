@@ -20,7 +20,7 @@ class FilteredCollectionViewCell: UICollectionViewCell {
         removeFilterLabel.text = "X"
         removeFilterLabel.textColor = .white
         removeFilterLabel.textAlignment = .center
-        removeFilterLabel.backgroundColor = .red
+        removeFilterLabel.backgroundColor = .systemBlue
         removeFilterLabel.layer.cornerRadius = 15
         removeFilterLabel.clipsToBounds = true
         removeFilterLabel.translatesAutoresizingMaskIntoConstraints = false
