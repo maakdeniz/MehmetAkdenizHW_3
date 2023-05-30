@@ -13,7 +13,6 @@ class WordViewController: UIViewController {
     //MARK: - IBOutles
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var wordTableView: UITableView!
-    @IBOutlet weak var searchButton: UIButton!
     @IBOutlet weak var searchButtonBottomConstraint: NSLayoutConstraint!
     
     //MARK: - Variables Definatios
@@ -28,35 +27,10 @@ class WordViewController: UIViewController {
         searchHistory = defaultsService.getSearchHistory() ?? []
         configure()
         viewModel = WordViewModel(networkService: NetworkService())
-        KeyboardHelper.shared
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
+        KeyboardHelper.shared.delegate = self
     }
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//        searchButtonBottomConstraint.constant = KeyboardHelper.shared.keyboardHeight
-//    }
-    
-    @objc func keyboardWillShow(notification: NSNotification) {
-        print("keyboardWillShow triggered")
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            UIView.animate(withDuration: 0.5) { [weak self] in
-                self?.searchButtonBottomConstraint.constant = keyboardSize.height
-                self?.view.layoutIfNeeded()
-            }
-        }
-    }
-    
-    @objc func keyboardWillHide(notification: NSNotification) {
-        print("keyboardWillHide triggered")
-        UIView.animate(withDuration: 0.5) { [weak self] in
-            self?.searchButtonBottomConstraint.constant = 0
-            self?.view.layoutIfNeeded()
-        }
-    }
-    
-    
+
     //MARK: - IBAction Func.
     @IBAction func searchButtonTapped(_ sender: UIButton) {
         searchWord()
@@ -78,9 +52,6 @@ class WordViewController: UIViewController {
             DispatchQueue.main.async { [self] in
                 switch result {
                 case .failure(let error):
-                    //                        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                    //                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    //                        self?.present(alert, animated: true, completion: nil)
                     print(error)
                 case .success(let words):
                     guard let word = words.first else {
@@ -110,8 +81,20 @@ class WordViewController: UIViewController {
     }
 }
 
-extension WordViewController {
-    
+//MARK: - Keyboard Delegate
+extension WordViewController:KeyboardVisibilityDelegate {
+    func keyboardWillShow(_ height: CGFloat) {
+            UIView.animate(withDuration: 0.5) { [weak self] in
+                self?.searchButtonBottomConstraint.constant = height
+                self?.view.layoutIfNeeded()
+            }
+        }
+    func keyboardWillHide() {
+            UIView.animate(withDuration: 0.5) { [weak self] in
+                self?.searchButtonBottomConstraint.constant = 0
+                self?.view.layoutIfNeeded()
+            }
+        }
 }
 
 //MARK: - Searchbar Extesion
