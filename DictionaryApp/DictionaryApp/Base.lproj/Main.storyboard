@@ -12,24 +12,24 @@
         <!--Word View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="WordViewController" customModule="DictionaryApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WordViewController" id="BYZ-38-t0r" customClass="WordViewController" customModule="DictionaryApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Tk2-bq-lV9">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="nWP-OM-rgx">
-                                <rect key="frame" x="16" y="67" width="361" height="56"/>
+                                <rect key="frame" x="0.0" y="67" width="393" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="vJp-Dg-IRA">
-                                <rect key="frame" x="16" y="165" width="361" height="586"/>
+                                <rect key="frame" x="0.0" y="165" width="393" height="565"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="WordCell" rowHeight="50" id="b8f-o5-YYC" customClass="WordTableViewCell" customModule="DictionaryApp" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="50" width="361" height="50"/>
+                                        <rect key="frame" x="0.0" y="50" width="393" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="b8f-o5-YYC" id="ITa-EY-WPY">
-                                            <rect key="frame" x="0.0" y="0.0" width="361" height="50"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="50"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="search" translatesAutoresizingMaskIntoConstraints="NO" id="zlq-OK-ZY8">
@@ -40,7 +40,7 @@
                                                     </constraints>
                                                 </imageView>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Sd-NV-mWZ">
-                                                    <rect key="frame" x="303" y="11" width="34" height="28"/>
+                                                    <rect key="frame" x="335" y="11" width="34" height="28"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="34" id="Ttn-Cf-6yo"/>
                                                         <constraint firstAttribute="height" constant="28" id="cGi-kK-Rjy"/>
@@ -49,7 +49,7 @@
                                                     <buttonConfiguration key="configuration" style="plain" image="right-arrow"/>
                                                 </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vpC-8t-RyX">
-                                                    <rect key="frame" x="76" y="11" width="203" height="28"/>
+                                                    <rect key="frame" x="76" y="11" width="235" height="28"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -75,15 +75,18 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Recent search" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7b6-Od-6Vp">
-                                <rect key="frame" x="16" y="131" width="361" height="18"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Recent search" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7b6-Od-6Vp">
+                                <rect key="frame" x="0.0" y="131" width="393" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lr2-eu-E7U">
-                                <rect key="frame" x="16" y="767" width="361" height="35"/>
+                                <rect key="frame" x="0.0" y="738" width="393" height="80"/>
                                 <color key="backgroundColor" systemColor="linkColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="aDq-O6-csd"/>
+                                </constraints>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Search">
                                     <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -96,30 +99,30 @@
                         <viewLayoutGuide key="safeArea" id="uTS-pq-ykj"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="nWP-OM-rgx" firstAttribute="leading" secondItem="uTS-pq-ykj" secondAttribute="leading" constant="16" id="0Q8-cY-qZ6"/>
-                            <constraint firstAttribute="trailing" secondItem="7b6-Od-6Vp" secondAttribute="trailing" constant="16" id="4dC-nV-JTa"/>
-                            <constraint firstItem="vJp-Dg-IRA" firstAttribute="top" secondItem="7b6-Od-6Vp" secondAttribute="bottom" constant="16" id="8zg-Ht-PiJ"/>
-                            <constraint firstItem="Lr2-eu-E7U" firstAttribute="leading" secondItem="uTS-pq-ykj" secondAttribute="leading" constant="16" id="9DZ-nE-Eab"/>
-                            <constraint firstItem="7b6-Od-6Vp" firstAttribute="leading" secondItem="uTS-pq-ykj" secondAttribute="leading" constant="16" id="9QA-yG-FUf"/>
-                            <constraint firstItem="uTS-pq-ykj" firstAttribute="trailing" secondItem="Lr2-eu-E7U" secondAttribute="trailing" constant="16" id="CX3-KX-kFN"/>
-                            <constraint firstItem="uTS-pq-ykj" firstAttribute="trailing" secondItem="nWP-OM-rgx" secondAttribute="trailing" constant="16" id="LUP-uG-q9r"/>
-                            <constraint firstItem="Lr2-eu-E7U" firstAttribute="top" secondItem="vJp-Dg-IRA" secondAttribute="bottom" constant="16" id="OCt-y3-4el"/>
-                            <constraint firstItem="uTS-pq-ykj" firstAttribute="bottom" secondItem="Lr2-eu-E7U" secondAttribute="bottom" constant="16" id="YWQ-bU-FHj"/>
-                            <constraint firstItem="7b6-Od-6Vp" firstAttribute="top" secondItem="nWP-OM-rgx" secondAttribute="bottom" constant="8" id="ebs-vd-YO6"/>
-                            <constraint firstItem="nWP-OM-rgx" firstAttribute="top" secondItem="uTS-pq-ykj" secondAttribute="top" constant="8" id="h2n-lM-JUC"/>
-                            <constraint firstItem="uTS-pq-ykj" firstAttribute="trailing" secondItem="vJp-Dg-IRA" secondAttribute="trailing" constant="16" id="kJt-Mz-Zr3"/>
-                            <constraint firstItem="vJp-Dg-IRA" firstAttribute="leading" secondItem="uTS-pq-ykj" secondAttribute="leading" constant="16" id="miP-iX-rQG"/>
+                            <constraint firstItem="vJp-Dg-IRA" firstAttribute="top" secondItem="7b6-Od-6Vp" secondAttribute="bottom" constant="16" id="2SD-z1-buY"/>
+                            <constraint firstItem="Lr2-eu-E7U" firstAttribute="top" secondItem="vJp-Dg-IRA" secondAttribute="bottom" constant="8" symbolic="YES" id="7EB-lH-Roh"/>
+                            <constraint firstItem="7b6-Od-6Vp" firstAttribute="trailing" secondItem="uTS-pq-ykj" secondAttribute="trailing" id="Eij-9A-AcU"/>
+                            <constraint firstItem="nWP-OM-rgx" firstAttribute="leading" secondItem="uTS-pq-ykj" secondAttribute="leading" id="RUO-eB-Oii"/>
+                            <constraint firstItem="uTS-pq-ykj" firstAttribute="bottom" secondItem="Lr2-eu-E7U" secondAttribute="bottom" id="UOh-oL-dEZ"/>
+                            <constraint firstItem="7b6-Od-6Vp" firstAttribute="leading" secondItem="uTS-pq-ykj" secondAttribute="leading" id="WVd-zJ-cV8"/>
+                            <constraint firstItem="vJp-Dg-IRA" firstAttribute="leading" secondItem="uTS-pq-ykj" secondAttribute="leading" id="bnU-QQ-n5t"/>
+                            <constraint firstItem="Lr2-eu-E7U" firstAttribute="trailing" secondItem="uTS-pq-ykj" secondAttribute="trailing" id="dyZ-Qd-pOO"/>
+                            <constraint firstItem="7b6-Od-6Vp" firstAttribute="top" secondItem="nWP-OM-rgx" secondAttribute="bottom" constant="8" id="hxJ-0r-qbn"/>
+                            <constraint firstItem="nWP-OM-rgx" firstAttribute="top" secondItem="uTS-pq-ykj" secondAttribute="top" constant="8" id="iou-KE-owA"/>
+                            <constraint firstItem="vJp-Dg-IRA" firstAttribute="trailing" secondItem="uTS-pq-ykj" secondAttribute="trailing" id="mcW-Y3-NfM"/>
+                            <constraint firstItem="Lr2-eu-E7U" firstAttribute="leading" secondItem="uTS-pq-ykj" secondAttribute="leading" id="rDc-ca-pDx"/>
+                            <constraint firstItem="nWP-OM-rgx" firstAttribute="trailing" secondItem="uTS-pq-ykj" secondAttribute="trailing" id="rxZ-mA-tZ4"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="Vfr-o9-Eo2"/>
                     <connections>
                         <outlet property="searchBar" destination="nWP-OM-rgx" id="8cV-S9-wgE"/>
+                        <outlet property="searchButtonBottomConstraint" destination="UOh-oL-dEZ" id="6H7-Mc-bwX"/>
                         <outlet property="wordTableView" destination="vJp-Dg-IRA" id="ITF-vG-PO7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1271" y="-27"/>
+            <point key="canvasLocation" x="1270.9923664122136" y="-27.464788732394368"/>
         </scene>
         <!--Detail View Controller-->
         <scene sceneID="Z7f-JG-t3n">

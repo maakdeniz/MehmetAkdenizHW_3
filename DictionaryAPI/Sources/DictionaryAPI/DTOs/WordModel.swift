@@ -8,12 +8,22 @@
 import Foundation
 
 public struct Word: Codable {
-    public let word: String
-    public let phonetic: String?
-    public let phonetics: [Phonetic]?
+    public var word: String
+    public var phonetic: String?
+    public var phonetics: [Phonetic]?
     public var meanings: [Meaning]?
-    public let license: License?
-    public let sourceUrls: [String]?
+    public var license: License?
+    public var sourceUrls: [String]?
+    
+//    public init(word: String, phonetic: String? = nil, phonetics: [Phonetic]? = nil, meanings: [Meaning]? = nil, license: License? = nil, sourceUrls: [String]? = nil) {
+//            self.word = word
+//            self.phonetic = phonetic
+//            self.phonetics = phonetics
+//            self.meanings = meanings
+//            self.license = license
+//            self.sourceUrls = sourceUrls
+//        }
+    
 }
 
 public struct Phonetic: Codable {
