@@ -15,15 +15,6 @@ public struct Word: Codable {
     public var license: License?
     public var sourceUrls: [String]?
     
-//    public init(word: String, phonetic: String? = nil, phonetics: [Phonetic]? = nil, meanings: [Meaning]? = nil, license: License? = nil, sourceUrls: [String]? = nil) {
-//            self.word = word
-//            self.phonetic = phonetic
-//            self.phonetics = phonetics
-//            self.meanings = meanings
-//            self.license = license
-//            self.sourceUrls = sourceUrls
-//        }
-    
 }
 
 public struct Phonetic: Codable {
