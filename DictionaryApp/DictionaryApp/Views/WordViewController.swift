@@ -27,7 +27,6 @@ class WordViewController: UIViewController {
         searchHistory = defaultsService.getSearchHistory() ?? []
         configure()
         viewModel = WordViewModel(networkService: NetworkService())
-        
         KeyboardHelper.shared.delegate = self
     }
 
@@ -55,10 +54,9 @@ class WordViewController: UIViewController {
                     print(error)
                 case .success(let words):
                     guard let word = words.first else {
-                        
                         return
                     }
-                    
+    
                     self?.searchHistory.append(word)
                     if self?.searchHistory.count ?? 0 > 5 {
                         self?.searchHistory.removeFirst()
@@ -117,7 +115,7 @@ extension WordViewController: UITableViewDelegate, UITableViewDataSource {
             cell.rightButton.addTarget(self, action: #selector(goToDetails), for: .touchUpInside)
             return cell
         } else {
-            return UITableViewCell() // return a default cell if we can't get a WordTableViewCell
+            return UITableViewCell() //
         }
     }
     //MARK: - objc functions

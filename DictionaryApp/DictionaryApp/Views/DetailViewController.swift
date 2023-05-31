@@ -30,7 +30,6 @@ class DetailViewController: UIViewController {
         configure()
         tableviewRegister()
         configureViewModel()
-    
     }
     
 
@@ -57,7 +56,6 @@ class DetailViewController: UIViewController {
         filteredCollectionView.dataSource = self
         synonymsCollectionView.delegate = self
         synonymsCollectionView.dataSource = self
-
     }
     
     func tableviewRegister() {
@@ -86,6 +84,7 @@ class DetailViewController: UIViewController {
                 DispatchQueue.main.async {
                     //print("Successfully fetched word details: \(word)")
                     self?.updateUI(with: word)
+                    self?.audioButton.isHidden = !(self?.viewModel.isAudioURLValid())!
                 }
             }
         }

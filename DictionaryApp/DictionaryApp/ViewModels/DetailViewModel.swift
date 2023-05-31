@@ -100,8 +100,24 @@ class DetailViewModel {
     func meaningIndexForType(_ type: String, indexPath: IndexPath) -> Int {
           return indexPath.row + 1
       }
-    
-    
+    func isAudioURLValid() -> Bool {
+            if let urlString = word?.phonetics?.first?.audio, let url = URL(string: urlString) {
+                var request = URLRequest(url: url)
+                request.httpMethod = "HEAD"
+                request.timeoutInterval = 1.0 // Change this as you need.
+                var response: URLResponse?
+                do {
+                    _ = try NSURLConnection.sendSynchronousRequest(request, returning: &response) as NSData?
+                } catch {
+                    print("Connection failed: \(error)")
+                    return false
+                }
+                if let httpResponse = response as? HTTPURLResponse {
+                    return httpResponse.statusCode == 200
+                }
+            }
+            return false
+        }
     //MARK: - Network Functions
     func fetchWordDetails(completion: @escaping (Result<Word, Error>) -> Void) {
         guard let word = word else { return }
