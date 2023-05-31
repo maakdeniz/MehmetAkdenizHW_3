@@ -79,12 +79,15 @@ class DetailViewController: UIViewController {
             switch result {
             case .failure(let error):
                 print("Failed to fetch word details: \(error)")
-                print(error)
             case .success(let word):
                 DispatchQueue.main.async {
                     //print("Successfully fetched word details: \(word)")
                     self?.updateUI(with: word)
-                    self?.audioButton.isHidden = !(self?.viewModel.isAudioURLValid())!
+                    self?.viewModel.isAudioURLValid { isValid in
+                        DispatchQueue.main.async {
+                            self?.audioButton.isHidden = !isValid
+                        }
+                    }
                 }
             }
         }
@@ -140,6 +143,7 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         }
         return viewModel.wordTypes.count
     }
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == synonymsCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "synonymCell", for: indexPath) as! SynonymCollectionViewCell
@@ -156,8 +160,13 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
             let wordType = viewModel.wordTypes[indexPath.row]
             cell.filtiredWordLabel.text = wordType
             cell.filtiredWordLabel.backgroundColor = .systemBlue
-            
 
+            cell.layer.borderWidth = 1.0
+            cell.layer.borderColor = UIColor.systemGray.cgColor
+            if viewModel.selectedWordTypes.contains(wordType) {
+                cell.layer.borderColor = UIColor.systemBlue.cgColor
+            }
+            
             if wordType == "X" {
                 cell.filtiredWordLabel.backgroundColor = .clear
                 cell.removeFilterLabel.isHidden = false
@@ -169,10 +178,7 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
             } else {
                 cell.filtiredWordLabel.backgroundColor = .clear
                 cell.removeFilterLabel.isHidden = true
-                cell.layer.borderWidth = 1.0
-                cell.layer.borderColor = UIColor.systemGray.cgColor
             }
-
             return cell
         }
     }
@@ -182,7 +188,6 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
             if wordType == "X" {
                 viewModel.selectedWordTypes.removeAll()
                 viewModel.isFiltering = false
-                viewModel.onSelectedWordTypesUpdated?()
             } else {
                 if let index = viewModel.selectedWordTypes.firstIndex(of: wordType) {
                     viewModel.selectedWordTypes.remove(at: index)
@@ -193,8 +198,9 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
                     viewModel.selectedWordTypes.append(wordType)
                     viewModel.isFiltering = true
                 }
-                viewModel.onSelectedWordTypesUpdated?()
             }
+            viewModel.onSelectedWordTypesUpdated?()
+            filteredCollectionView.reloadData()
         }
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
