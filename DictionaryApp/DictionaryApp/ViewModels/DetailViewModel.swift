@@ -119,25 +119,36 @@ class DetailViewModel {
           return indexPath.row + 1
       }
     func isAudioURLValid(completion: @escaping (Bool) -> Void) {
-        if let urlString = word?.phonetics?.first?.audio, let url = URL(string: urlString) {
-            var request = URLRequest(url: url)
-            request.httpMethod = "HEAD"
-            request.timeoutInterval = 1.0
-
-            let task = URLSession.shared.dataTask(with: request) { (_, response, error) in
-                if let error = error {
-                    print("Connection failed: \(error)")
-                    completion(false)
-                }
-                if let httpResponse = response as? HTTPURLResponse {
-                    completion(httpResponse.statusCode == 200)
-                }
-            }
-            task.resume()
-        } else {
+        guard let phonetics = word?.phonetics else {
             completion(false)
+            return
+        }
+
+        let dispatchGroup = DispatchGroup()
+
+        var validURLExists = false
+        for phonetic in phonetics {
+            if let urlString = phonetic.audio, let url = URL(string: urlString) {
+                dispatchGroup.enter()
+                var request = URLRequest(url: url)
+                request.httpMethod = "HEAD"
+                request.timeoutInterval = 1.0
+
+                let task = URLSession.shared.dataTask(with: request) { (_, response, error) in
+                    if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                        validURLExists = true
+                    }
+                    dispatchGroup.leave()
+                }
+                task.resume()
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            completion(validURLExists)
         }
     }
+
     //MARK: - Network Functions
     func fetchWordDetails(completion: @escaping (Result<Word, Error>) -> Void) {
         guard let word = word else { return }

@@ -44,19 +44,26 @@ class WordViewController: UIViewController {
     
     private func searchWord() {
         guard let searchText = searchBar.text, !searchText.isEmpty else {
+            showAlert(title: "Error", message: "You haven't entered a word to search.")
             return
         }
-        
+
         viewModel.fetchWord(searchText) { [weak self] result in
-            DispatchQueue.main.async { [self] in
+            DispatchQueue.main.async {
                 switch result {
                 case .failure(let error):
-                    print(error)
+                    if let fetchError = error as? WordViewModel.FetchWordError, fetchError == .wordNotFound {
+                        self?.showAlert(title: "Error", message: "The searched word could not be found.")
+                    } else if let nsError = error as? NSError, nsError.domain == "NetworkServiceError" && nsError.code == -2 {
+                        self?.showAlert(title: "Error", message: "The searched word could not be found.")
+                    } else {
+                        print(error)
+                    }
                 case .success(let words):
                     guard let word = words.first else {
                         return
                     }
-    
+
                     self?.searchHistory.append(word)
                     if self?.searchHistory.count ?? 0 > 5 {
                         self?.searchHistory.removeFirst()
@@ -76,6 +83,11 @@ class WordViewController: UIViewController {
         detailViewController.viewModel = detailViewModel
         detailViewController.modalPresentationStyle = .fullScreen
         self.present(detailViewController, animated: true, completion: nil)
+    }
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 }
 

@@ -35,14 +35,31 @@ class DetailViewController: UIViewController {
 
     //MARK: - IBAction Functions
     @IBAction func audioButtonTapped(_ sender: Any) {
-        guard let urlString = viewModel.word?.phonetics?.first?.audio,
-              let url = URL(string: urlString) else {
-            print("Invalid URL")
-            return
-        }
-        player = AVPlayer(url: url)
-        player?.play()
-    }
+        guard let phonetics = viewModel.word?.phonetics else {
+               print("No phonetics available")
+               return
+           }
+           
+           for phonetic in phonetics {
+               if let urlString = phonetic.audio,
+                  let url = URL(string: urlString) {
+                   var request = URLRequest(url: url)
+                   request.httpMethod = "HEAD"
+                   request.timeoutInterval = 1.0
+                   
+                   let task = URLSession.shared.dataTask(with: request) { [weak self] (_, response, error) in
+                       if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                           DispatchQueue.main.async {
+                               self?.player = AVPlayer(url: url)
+                               self?.player?.play()
+                           }
+                           return
+                       }
+                   }
+                   task.resume()
+               }
+           }
+       }
     
     @IBAction func backButtonTapped(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
