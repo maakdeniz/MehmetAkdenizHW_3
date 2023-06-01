@@ -3,54 +3,57 @@
 //  DictionaryApp
 //
 //  Created by Mehmet Akdeniz on 30.05.2023.
-//
+// CoreDataService.swift
 
+import Foundation
 import CoreData
 import UIKit
 import DictionaryAPI
 
+struct CoreDataService {
 
-
-
-class CoreDataService {
-    // Referans to managedObjectContext
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    private let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    private let context: NSManagedObjectContext
     
-    // Fetch Words from CoreData
-    func fetchWords() -> [WordEntity]? {
+    init() {
+        context = appDelegate.persistentContainer.viewContext
+    }
+    
+    func getSearchHistory() -> [String]? {
+        let request: NSFetchRequest<WordEntity> = WordEntity.fetchRequest()
+        request.fetchLimit = 5
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
         do {
-            let request = WordEntity.fetchRequest() as NSFetchRequest<WordEntity>
-            let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
-            request.sortDescriptors = [sortDescriptor]
-            let words = try context.fetch(request)
-            return words
+            let result = try context.fetch(request)
+            return result.compactMap { $0.word }
         } catch {
-            print("Failed to fetch words from CoreData")
+            print("Failed to fetch words: \(error)")
             return nil
         }
     }
+
     
-    // Save Word to CoreData
-    func saveWord(_ word: String) {
-        let entity = WordEntity(context: context)
-        entity.word = word
-        entity.date = Date()
-        do {
-            try context.save()
-        } catch {
-            print("Failed to save word to CoreData")
-        }
-    }
-    
-    // Delete the oldest word if there are more than 5 words
-    func deleteOldestWordIfNeeded() {
-        if let words = fetchWords(), words.count > 5 {
-            context.delete(words.last!)
+    func saveSearchHistory(_ word: String) {
+            let wordEntity = WordEntity(context: context)
+            wordEntity.word = word
+            wordEntity.date = Date()
             do {
                 try context.save()
             } catch {
-                print("Failed to delete word from CoreData")
+                print("Failed saving: \(error)")
             }
+        }
+    
+    func deleteOldWords() {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "WordEntity")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: true)]
+        do {
+            let results = try context.fetch(fetchRequest)
+            if results.count > 5 {
+                context.delete(results.first as! NSManagedObject)
+            }
+        } catch {
+            print("Error with request: \(error)")
         }
     }
 }

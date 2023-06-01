@@ -24,7 +24,6 @@
 		2B8CCC352A2144F90074CB4A /* WordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8CCC342A2144F90074CB4A /* WordViewModel.swift */; };
 		2B8CCC372A21450F0074CB4A /* WordTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8CCC362A21450F0074CB4A /* WordTableViewCell.swift */; };
 		2B8CCC392A2145300074CB4A /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8CCC382A2145300074CB4A /* DetailViewController.swift */; };
-		2B8CCC3B2A2145410074CB4A /* DefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8CCC3A2A2145410074CB4A /* DefaultsService.swift */; };
 		2B8CCC3F2A2147780074CB4A /* DictionaryAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 2B8CCC3E2A2147780074CB4A /* DictionaryAPI */; };
 		2B8CCC412A21542F0074CB4A /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8CCC402A21542F0074CB4A /* DetailViewModel.swift */; };
 		2B8CCC442A21559B0074CB4A /* WordDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B8CCC422A21559B0074CB4A /* WordDetailTableViewCell.swift */; };
@@ -70,7 +69,6 @@
 		2B8CCC342A2144F90074CB4A /* WordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordViewModel.swift; sourceTree = "<group>"; };
 		2B8CCC362A21450F0074CB4A /* WordTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordTableViewCell.swift; sourceTree = "<group>"; };
 		2B8CCC382A2145300074CB4A /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
-		2B8CCC3A2A2145410074CB4A /* DefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsService.swift; sourceTree = "<group>"; };
 		2B8CCC3C2A2146A90074CB4A /* DictionaryAPI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DictionaryAPI; path = ../DictionaryAPI; sourceTree = "<group>"; };
 		2B8CCC402A21542F0074CB4A /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		2B8CCC422A21559B0074CB4A /* WordDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordDetailTableViewCell.swift; sourceTree = "<group>"; };
@@ -125,7 +123,6 @@
 		2B7CB17B2A2385EC004AF953 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				2B8CCC3A2A2145410074CB4A /* DefaultsService.swift */,
 				2B8CCBFC2A213DE40074CB4A /* AppDelegate.swift */,
 				2B8CCBFE2A213DE40074CB4A /* SceneDelegate.swift */,
 				2B7CA0932A255DB200C415D3 /* CoreDataService.swift */,
@@ -345,7 +342,6 @@
 				2B8CCC392A2145300074CB4A /* DetailViewController.swift in Sources */,
 				2B7CA0942A255DB200C415D3 /* CoreDataService.swift in Sources */,
 				2B5856DA2A2626A3006DA08E /* KeyboardHelper.swift in Sources */,
-				2B8CCC3B2A2145410074CB4A /* DefaultsService.swift in Sources */,
 				2B8CCC372A21450F0074CB4A /* WordTableViewCell.swift in Sources */,
 				2B8CCC012A213DE40074CB4A /* WordViewController.swift in Sources */,
 				2B8CCC442A21559B0074CB4A /* WordDetailTableViewCell.swift in Sources */,

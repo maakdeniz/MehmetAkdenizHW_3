@@ -17,19 +17,23 @@ class WordViewController: UIViewController {
     
     //MARK: - Variables Definatios
     public var viewModel: WordViewModel!
-    private var searchHistory: [Word] = []
-    private var defaultsService = DefaultsService()
+    private var searchHistory: [String] = []
     private var coreDataService = CoreDataService()
+    
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        searchHistory = defaultsService.getSearchHistory() ?? []
+        searchHistory = coreDataService.getSearchHistory() ?? []
         configure()
         viewModel = WordViewModel(networkService: NetworkService())
         KeyboardHelper.shared.delegate = self
     }
-
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        searchBar.text = ""
+    }
+    
     //MARK: - IBAction Func.
     @IBAction func searchButtonTapped(_ sender: UIButton) {
         searchWord()
@@ -47,7 +51,7 @@ class WordViewController: UIViewController {
             showAlert(title: "Error", message: "You haven't entered a word to search.")
             return
         }
-
+        
         viewModel.fetchWord(searchText) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -63,14 +67,14 @@ class WordViewController: UIViewController {
                     guard let word = words.first else {
                         return
                     }
-
-                    self?.searchHistory.append(word)
-                    if self?.searchHistory.count ?? 0 > 5 {
-                        self?.searchHistory.removeFirst()
-                    }
-                    self?.defaultsService.saveSearchHistory(self?.searchHistory ?? [])
-                    self?.wordTableView.reloadData()
-                    self?.navigateToDetailViewController(with: word)
+                    
+                    self?.coreDataService.saveSearchHistory(word.word)
+                        self?.coreDataService.deleteOldWords()
+                        self?.searchHistory = self?.coreDataService.getSearchHistory() ?? []
+                        self?.wordTableView.reloadData()
+                        self?.navigateToDetailViewController(with: word)
+                    
+                    
                 }
             }
         }
@@ -94,17 +98,17 @@ class WordViewController: UIViewController {
 //MARK: - Keyboard Delegate
 extension WordViewController:KeyboardVisibilityDelegate {
     func keyboardWillShow(_ height: CGFloat) {
-            UIView.animate(withDuration: 0.5) { [weak self] in
-                self?.searchButtonBottomConstraint.constant = height
-                self?.view.layoutIfNeeded()
-            }
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            self?.searchButtonBottomConstraint.constant = height
+            self?.view.layoutIfNeeded()
         }
+    }
     func keyboardWillHide() {
-            UIView.animate(withDuration: 0.5) { [weak self] in
-                self?.searchButtonBottomConstraint.constant = 0
-                self?.view.layoutIfNeeded()
-            }
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            self?.searchButtonBottomConstraint.constant = 0
+            self?.view.layoutIfNeeded()
         }
+    }
 }
 
 //MARK: - Searchbar Extesion
@@ -122,7 +126,7 @@ extension WordViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "WordCell", for: indexPath) as? WordTableViewCell {
             let word = searchHistory[indexPath.row]
-            cell.wordLabel.text = word.word
+            cell.wordLabel.text = word
             cell.rightButton.tag = indexPath.row
             cell.rightButton.addTarget(self, action: #selector(goToDetails), for: .touchUpInside)
             return cell
@@ -132,7 +136,20 @@ extension WordViewController: UITableViewDelegate, UITableViewDataSource {
     }
     //MARK: - objc functions
     @objc func goToDetails(_ sender: UIButton) {
-        let word = searchHistory[sender.tag]
-        navigateToDetailViewController(with: word)
+        let wordString = searchHistory[sender.tag]
+        viewModel.fetchWord(wordString) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .failure(let error):
+                    print(error)
+                case .success(let words):
+                    guard let word = words.first else {
+                        return
+                    }
+                    self?.navigateToDetailViewController(with: word)
+                }
+            }
+        }
     }
+
 }
