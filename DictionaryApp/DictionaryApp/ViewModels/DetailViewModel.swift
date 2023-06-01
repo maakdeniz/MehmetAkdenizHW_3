@@ -10,7 +10,7 @@ class DetailViewModel {
     var meaningCounts: [String: Int] = [:]
     var wordTypes: [String] = []
     var filteredMeanings: [Meaning]?
-    var groupedMeanings: [String: [Meaning]] = [:]
+    var groupedDefinitions: [String: [Definition]] = [:]
     var meaningIndices: [String: Int] = [:]
     
     var isFiltering: Bool = false {
@@ -54,49 +54,67 @@ class DetailViewModel {
             word?.meanings = filteredMeanings
 
             if let meanings = word?.meanings {
-                let grouped = Dictionary(grouping: meanings, by: { $0.partOfSpeech ?? "" })
-                self.groupedMeanings = grouped
+                var newGroupedDefinitions: [String: [Definition]] = [:]
+
+                for meaning in meanings {
+                    if let pos = meaning.partOfSpeech {
+                        if newGroupedDefinitions[pos] != nil {
+                            newGroupedDefinitions[pos]?.append(contentsOf: meaning.definitions )
+                        } else {
+                            newGroupedDefinitions[pos] = meaning.definitions
+                        }
+                    }
+                }
+
+                self.groupedDefinitions = newGroupedDefinitions
             }
-            onSelectedWordTypesUpdated?()  
+            onSelectedWordTypesUpdated?()
         }
     }
-    
     var wordText: String? {
         return word?.word
     }
     var phoneticText: String? {
         return word?.phonetic
     }
-
 //MARK: - Closures
     var onSelectedWordTypesUpdated: (() -> Void)?
     var onWordTypesUpdated: (() -> Void)?
     
 //MARK: - Initiliazer
     init(word: Word, networkService: NetworkServiceProtocol) {
-        self.word = word
-        self.networkService = networkService
-        self.originalMeanings = word.meanings?.sorted(by: { $0.partOfSpeech ?? "" < $1.partOfSpeech ?? "" })
-        self.filteredMeanings = originalMeanings
-        
-        if let meanings = word.meanings {
-            let grouped = Dictionary(grouping: meanings, by: { $0.partOfSpeech ?? "" })
-            self.groupedMeanings = grouped
+            self.word = word
+            self.networkService = networkService
+            self.originalMeanings = word.meanings?.sorted(by: { $0.partOfSpeech ?? "" < $1.partOfSpeech ?? "" })
+            
+            // Her bir Meaning'deki Definition'ları ayırın ve bunları groupedDefinitions'a atayın:
+            if let meanings = word.meanings {
+                for meaning in meanings {
+                    for definition in meaning.definitions {
+                        if let pos = meaning.partOfSpeech {
+                            if groupedDefinitions[pos] != nil {
+                                groupedDefinitions[pos]?.append(definition)
+                            } else {
+                                groupedDefinitions[pos] = [definition]
+                            }
+                        }
+                    }
+                }
+            }
         }
-    }
-    
     func numberOfSections() -> Int {
-        return filteredMeanings?.count ?? 0
-    }
+            return wordTypes.count
+        }
     func numberOfRowsInSection(_ section: Int) -> Int {
-        return 1
-    }
-    func meaningForIndexPath(_ indexPath: IndexPath) -> Meaning? {
-        let partOfSpeech = wordTypes[indexPath.section]
-        let meanings = groupedMeanings[partOfSpeech]
-        let meaning = meanings?[indexPath.row]
-        return meaning
-    }
+            let partOfSpeech = wordTypes[section]
+            return groupedDefinitions[partOfSpeech]?.count ?? 0
+        }
+    func definitionForIndexPath(_ indexPath: IndexPath) -> Definition? {
+            let partOfSpeech = wordTypes[indexPath.section]
+            let definitions = groupedDefinitions[partOfSpeech]
+            let definition = definitions?[indexPath.row]
+            return definition
+        }
     func meaningIndexForType(_ type: String, indexPath: IndexPath) -> Int {
           return indexPath.row + 1
       }
@@ -151,7 +169,6 @@ class DetailViewModel {
             }
         }
     }
-    
     func fetchFilteredSynonyms(word: String, completion: @escaping (Result<[Synonym], Error>) -> Void) {
         guard let url = URL(string: "https://api.datamuse.com/words?rel_syn=\(word)") else {
             completion(.failure(NSError(domain: "NetworkServiceError", code: -1, userInfo: [NSLocalizedDescriptionKey : "Invalid URL"])))

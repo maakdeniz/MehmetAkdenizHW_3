@@ -81,7 +81,7 @@ class DetailViewController: UIViewController {
                 print("Failed to fetch word details: \(error)")
             case .success(let word):
                 DispatchQueue.main.async {
-                    //print("Successfully fetched word details: \(word)")
+                    print("Successfully fetched word details: \(word)")
                     self?.updateUI(with: word)
                     self?.viewModel.isAudioURLValid { isValid in
                         DispatchQueue.main.async {
@@ -121,16 +121,18 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return viewModel.wordTypes.count
     }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let partOfSpeech = viewModel.wordTypes[section]
-        return viewModel.groupedMeanings[partOfSpeech]?.count ?? 0
+        return viewModel.groupedDefinitions[partOfSpeech]?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WordDetailTableViewCell.identifier, for: indexPath) as! WordDetailTableViewCell
-        if let meaning = viewModel.meaningForIndexPath(indexPath) {
-            let count = viewModel.meaningIndexForType(meaning.partOfSpeech ?? "", indexPath: indexPath)
-            cell.configure(with: meaning, count: count)
+        if let definition = viewModel.definitionForIndexPath(indexPath) {
+            let partOfSpeech = viewModel.wordTypes[indexPath.section]
+            let count = viewModel.meaningIndexForType(partOfSpeech, indexPath: indexPath)
+            cell.configure(with: definition, count: count, partOfSpeech: partOfSpeech)
         }
         return cell
     }

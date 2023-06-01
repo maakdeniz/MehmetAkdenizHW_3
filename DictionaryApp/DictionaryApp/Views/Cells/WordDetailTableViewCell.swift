@@ -25,21 +25,11 @@ class WordDetailTableViewCell: UITableViewCell {
         super.prepareForReuse()
         //exampleLabel.isHidden = false
     }
-    func configure(with meaning: Meaning, count: Int) {
-        if let type = meaning.partOfSpeech {
-            partOfSpeechLabel.text = "\(count) - \(type.capitalized)"
-        } else {
-            partOfSpeechLabel.text = "\(count) - Unknown"
-        }
-
-        if let firstDefinition = meaning.definitions.first {
-            definitionLabel.text = firstDefinition.definition
-            exampleLabel.text = "Example\n" + (firstDefinition.example ?? "") 
-            exampleLabel.isHidden = firstDefinition.example == nil
-        } else {
-            definitionLabel.text = ""
-            exampleLabel.text = ""
-            exampleLabel.isHidden = true
-        }
+    func configure(with definition: Definition, count: Int, partOfSpeech: String) {
+        partOfSpeechLabel.text = "\(count) - \(partOfSpeech.capitalized)"
+        definitionLabel.text = definition.definition
+        exampleLabel.text = "Example\n" + (definition.example ?? "")
+        exampleLabel.isHidden = definition.example == nil
     }
 }
+
