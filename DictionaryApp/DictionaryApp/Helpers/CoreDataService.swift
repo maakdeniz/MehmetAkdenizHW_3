@@ -34,15 +34,26 @@ struct CoreDataService {
 
     
     func saveSearchHistory(_ word: String) {
-            let wordEntity = WordEntity(context: context)
-            wordEntity.word = word
-            wordEntity.date = Date()
-            do {
-                try context.save()
-            } catch {
-                print("Failed saving: \(error)")
+        let request: NSFetchRequest<WordEntity> = WordEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "word == %@", word)
+        
+        do {
+            let results = try context.fetch(request)
+            if let wordEntity = results.first {
+                // Kelime zaten var, tarihini güncelleyin
+                wordEntity.date = Date()
+            } else {
+                // Kelime yok, yeni bir kayıt oluşturun
+                let newWordEntity = WordEntity(context: context)
+                newWordEntity.word = word
+                newWordEntity.date = Date()
             }
+            try context.save()
+        } catch {
+            print("Failed saving: \(error)")
         }
+    }
+
     
     func deleteOldWords() {
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "WordEntity")

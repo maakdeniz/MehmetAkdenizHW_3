@@ -17,23 +17,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         let window = UIWindow(windowScene: windowScene)
-        
-        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-        
         guard let wordViewController = storyboard.instantiateViewController(identifier: "WordViewController") as? WordViewController else {
             fatalError("WordViewController not found in Storyboard")
         }
-        
-        
         let networkService = NetworkService()
-        let viewModel = WordViewModel(networkService: networkService)
-        wordViewController.viewModel = viewModel
-        
-        
+        let coreDataService = CoreDataService()
+        let viewModel = WordViewModel(networkService: networkService,
+                                      coreDataService: coreDataService)
+        wordViewController.viewModel = viewModel as? any WordViewModelProtocol
         window.rootViewController = wordViewController
-        
         self.window = window
         window.makeKeyAndVisible()
     }

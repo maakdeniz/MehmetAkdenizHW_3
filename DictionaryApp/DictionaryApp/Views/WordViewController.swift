@@ -7,7 +7,6 @@
 
 import UIKit
 import DictionaryAPI
-
 class WordViewController: UIViewController {
     
     //MARK: - IBOutles
@@ -16,18 +15,16 @@ class WordViewController: UIViewController {
     @IBOutlet weak var searchButtonBottomConstraint: NSLayoutConstraint!
     
     //MARK: - Variables Definatios
-    public var viewModel: WordViewModel!
-    private var searchHistory: [String] = []
-    private var coreDataService = CoreDataService()
-    
-    
+    public var viewModel: WordViewModelProtocol!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        searchHistory = coreDataService.getSearchHistory() ?? []
-        configure()
-        viewModel = WordViewModel(networkService: NetworkService())
+        let networkService = NetworkService()
+        let coreDataService = CoreDataService()
+        viewModel = WordViewModel(networkService: networkService, coreDataService: coreDataService) as? any WordViewModelProtocol
+        viewModel.delegate = self
         KeyboardHelper.shared.delegate = self
+        configure()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -36,7 +33,7 @@ class WordViewController: UIViewController {
     
     //MARK: - IBAction Func.
     @IBAction func searchButtonTapped(_ sender: UIButton) {
-        searchWord()
+        viewModel.searchWord(word: searchBar.text ?? "")
     }
     
     //MARK: - Functions Definations
@@ -45,41 +42,7 @@ class WordViewController: UIViewController {
         wordTableView.delegate = self
         searchBar.delegate = self
     }
-    
-    private func searchWord() {
-        guard let searchText = searchBar.text, !searchText.isEmpty else {
-            showAlert(title: "Error", message: "You haven't entered a word to search.")
-            return
-        }
         
-        viewModel.fetchWord(searchText) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .failure(let error):
-                    if let fetchError = error as? WordViewModel.FetchWordError, fetchError == .wordNotFound {
-                        self?.showAlert(title: "Error", message: "The searched word could not be found.")
-                    } else if let nsError = error as? NSError, nsError.domain == "NetworkServiceError" && nsError.code == -2 {
-                        self?.showAlert(title: "Error", message: "The searched word could not be found.")
-                    } else {
-                        print(error)
-                    }
-                case .success(let words):
-                    guard let word = words.first else {
-                        return
-                    }
-                    
-                    self?.coreDataService.saveSearchHistory(word.word)
-                        self?.coreDataService.deleteOldWords()
-                        self?.searchHistory = self?.coreDataService.getSearchHistory() ?? []
-                        self?.wordTableView.reloadData()
-                        self?.navigateToDetailViewController(with: word)
-                    
-                    
-                }
-            }
-        }
-    }
-    
     private func navigateToDetailViewController(with word: Word) {
         let detailViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
         let detailViewModel = DetailViewModel(word: word,
@@ -93,6 +56,48 @@ class WordViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
+}
+
+extension WordViewController: WordViewModelDelegate {
+    func reloadData() {
+        self.wordTableView.reloadData()
+    }
+    
+    func didUpdateWord(_ viewModel: WordViewModel, word: Word) {
+        DispatchQueue.main.async { [self] in
+            // Update UI with the new word
+            reloadData()
+            self.navigateToDetailViewController(with: word)
+        }
+    }
+    
+    func didFailWithError(_ viewModel: WordViewModel, error: Error) {
+        DispatchQueue.main.async {
+            let message: String
+            if let fetchError = error as? WordViewModel.FetchWordError, fetchError == .wordNotFound {
+                message = "The searched word could not be found."
+            } else if let nsError = error as? NSError, nsError.domain == "NetworkServiceError" {
+                switch nsError.code {
+                case -1:
+                    message = "Invalid URL."
+                case -2:
+                    message = "Unable to decode response."
+                case -3:
+                    message = "No data received."
+                default:
+                    message = "An error occurred."
+                }
+            } else {
+                message = error.localizedDescription
+            }
+            self.showAlert(title: "Error", message: message)
+        }
+    }
+    func navigateToDetailViewController(word: Word) {
+          navigateToDetailViewController(with: word)
+      }
+    
+    
 }
 
 //MARK: - Keyboard Delegate
@@ -114,18 +119,18 @@ extension WordViewController:KeyboardVisibilityDelegate {
 //MARK: - Searchbar Extesion
 extension WordViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchWord()
+        viewModel.searchWord(word: searchBar.text ?? "")
     }
 }
 //MARK: - Tableview Extesion
 extension WordViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchHistory.count
+        return viewModel.searchHistory.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "WordCell", for: indexPath) as? WordTableViewCell {
-            let word = searchHistory[indexPath.row]
+            let word = viewModel.searchHistory[indexPath.row]
             cell.wordLabel.text = word
             cell.rightButton.tag = indexPath.row
             cell.rightButton.addTarget(self, action: #selector(goToDetails), for: .touchUpInside)
@@ -136,20 +141,8 @@ extension WordViewController: UITableViewDelegate, UITableViewDataSource {
     }
     //MARK: - objc functions
     @objc func goToDetails(_ sender: UIButton) {
-        let wordString = searchHistory[sender.tag]
-        viewModel.fetchWord(wordString) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .failure(let error):
-                    print(error)
-                case .success(let words):
-                    guard let word = words.first else {
-                        return
-                    }
-                    self?.navigateToDetailViewController(with: word)
-                }
-            }
-        }
+        let wordString = viewModel.searchHistory[sender.tag]
+        viewModel.fetchWord(wordString)
     }
-
+    
 }
