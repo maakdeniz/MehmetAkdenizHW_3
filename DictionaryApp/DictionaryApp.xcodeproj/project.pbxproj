@@ -108,8 +108,8 @@
 		2B7CB1792A2385D2004AF953 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				2B8CCC342A2144F90074CB4A /* WordViewModel.swift */,
 				2B8CCC402A21542F0074CB4A /* DetailViewModel.swift */,
+				2B8CCC342A2144F90074CB4A /* WordViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -117,10 +117,12 @@
 		2B7CB17A2A2385E4004AF953 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				2B7CB17C2A23863C004AF953 /* Cells */,
-				2B8CCC002A213DE40074CB4A /* WordViewController.swift */,
+				2B8CCC022A213DE40074CB4A /* Main.storyboard */,
+				2B8CCC0A2A213DE50074CB4A /* LaunchScreen.storyboard */,
 				2B8CCC382A2145300074CB4A /* DetailViewController.swift */,
 				2B8147052A2A1E650009801E /* LoadingView.swift */,
+				2B8CCC002A213DE40074CB4A /* WordViewController.swift */,
+				2B7CB17C2A23863C004AF953 /* Cells */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -129,9 +131,9 @@
 			isa = PBXGroup;
 			children = (
 				2B8CCBFC2A213DE40074CB4A /* AppDelegate.swift */,
-				2B8CCBFE2A213DE40074CB4A /* SceneDelegate.swift */,
 				2B7CA0932A255DB200C415D3 /* CoreDataService.swift */,
 				2B5856D92A2626A3006DA08E /* KeyboardHelper.swift */,
+				2B8CCBFE2A213DE40074CB4A /* SceneDelegate.swift */,
 				2B8147072A2A1E810009801E /* LoadingShowable.swift */,
 			);
 			path = Helpers;
@@ -140,11 +142,11 @@
 		2B7CB17C2A23863C004AF953 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				2B79BC1A2A228BF500EC3896 /* FilteredCollectionViewCell.swift */,
+				2B7CB17D2A23CC06004AF953 /* SynonymCollectionViewCell.swift */,
 				2B8CCC422A21559B0074CB4A /* WordDetailTableViewCell.swift */,
 				2B8CCC432A21559B0074CB4A /* WordDetailTableViewCell.xib */,
 				2B8CCC362A21450F0074CB4A /* WordTableViewCell.swift */,
-				2B79BC1A2A228BF500EC3896 /* FilteredCollectionViewCell.swift */,
-				2B7CB17D2A23CC06004AF953 /* SynonymCollectionViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -177,9 +179,7 @@
 				2B7CB17B2A2385EC004AF953 /* Helpers */,
 				2B7CB1792A2385D2004AF953 /* ViewModels */,
 				2B7CB17A2A2385E4004AF953 /* Views */,
-				2B8CCC022A213DE40074CB4A /* Main.storyboard */,
 				2B8CCC082A213DE50074CB4A /* Assets.xcassets */,
-				2B8CCC0A2A213DE50074CB4A /* LaunchScreen.storyboard */,
 				2B8CCC0D2A213DE50074CB4A /* Info.plist */,
 				2B8CCC052A213DE40074CB4A /* DictionaryApp.xcdatamodeld */,
 			);
