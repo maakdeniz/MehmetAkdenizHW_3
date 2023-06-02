@@ -21,10 +21,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let wordViewController = storyboard.instantiateViewController(identifier: "WordViewController") as? WordViewController else {
             fatalError("WordViewController not found in Storyboard")
         }
-        let networkService = NetworkService()
+        
         let coreDataService = CoreDataService()
-        let viewModel = WordViewModel(networkService: networkService,
-                                      coreDataService: coreDataService)
+        let viewModel = WordViewModel(coreDataService: coreDataService)
         wordViewController.viewModel = viewModel as? any WordViewModelProtocol
         window.rootViewController = wordViewController
         self.window = window

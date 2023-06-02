@@ -10,6 +10,7 @@ import DictionaryAPI
 
 class WordDetailTableViewCell: UITableViewCell {
 
+    @IBOutlet weak var mockExampleLabel: UILabel!
     @IBOutlet weak var partOfSpeechLabel: UILabel!
     @IBOutlet weak var definitionLabel: UILabel!
     @IBOutlet weak var exampleLabel: UILabel!
@@ -23,13 +24,20 @@ class WordDetailTableViewCell: UITableViewCell {
     }
     override func prepareForReuse() {
         super.prepareForReuse()
-        //exampleLabel.isHidden = false
     }
     func configure(with definition: Definition, count: Int, partOfSpeech: String) {
         partOfSpeechLabel.text = "\(count) - \(partOfSpeech.capitalized)"
         definitionLabel.text = definition.definition
-        exampleLabel.text = "Example\n" + (definition.example ?? "")
-        exampleLabel.isHidden = definition.example == nil
+        if let example = definition.example {
+            mockExampleLabel.isHidden = false
+            mockExampleLabel.text = "Example"
+            exampleLabel.text = example
+        } else {
+            mockExampleLabel.isHidden = true
+            mockExampleLabel.text = nil
+            exampleLabel.text = nil
+            exampleLabel.isHidden = true
+        }
     }
 }
 

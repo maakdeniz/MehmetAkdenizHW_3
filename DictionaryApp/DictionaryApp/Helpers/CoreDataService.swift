@@ -40,10 +40,10 @@ struct CoreDataService {
         do {
             let results = try context.fetch(request)
             if let wordEntity = results.first {
-                // Kelime zaten var, tarihini güncelleyin
+                
                 wordEntity.date = Date()
             } else {
-                // Kelime yok, yeni bir kayıt oluşturun
+                
                 let newWordEntity = WordEntity(context: context)
                 newWordEntity.word = word
                 newWordEntity.date = Date()

@@ -22,7 +22,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="vJp-Dg-IRA">
-                                <rect key="frame" x="0.0" y="165" width="393" height="565"/>
+                                <rect key="frame" x="0.0" y="165" width="393" height="599"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="WordCell" rowHeight="50" id="b8f-o5-YYC" customClass="WordTableViewCell" customModule="DictionaryApp" customModuleProvider="target">
@@ -82,7 +82,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lr2-eu-E7U">
-                                <rect key="frame" x="0.0" y="738" width="393" height="80"/>
+                                <rect key="frame" x="0.0" y="772" width="393" height="80"/>
                                 <color key="backgroundColor" systemColor="linkColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="aDq-O6-csd"/>
@@ -101,9 +101,9 @@
                         <constraints>
                             <constraint firstItem="vJp-Dg-IRA" firstAttribute="top" secondItem="7b6-Od-6Vp" secondAttribute="bottom" constant="16" id="2SD-z1-buY"/>
                             <constraint firstItem="Lr2-eu-E7U" firstAttribute="top" secondItem="vJp-Dg-IRA" secondAttribute="bottom" constant="8" symbolic="YES" id="7EB-lH-Roh"/>
+                            <constraint firstAttribute="bottom" secondItem="Lr2-eu-E7U" secondAttribute="bottom" id="98h-Yr-oMR"/>
                             <constraint firstItem="7b6-Od-6Vp" firstAttribute="trailing" secondItem="uTS-pq-ykj" secondAttribute="trailing" id="Eij-9A-AcU"/>
                             <constraint firstItem="nWP-OM-rgx" firstAttribute="leading" secondItem="uTS-pq-ykj" secondAttribute="leading" id="RUO-eB-Oii"/>
-                            <constraint firstItem="uTS-pq-ykj" firstAttribute="bottom" secondItem="Lr2-eu-E7U" secondAttribute="bottom" id="UOh-oL-dEZ"/>
                             <constraint firstItem="7b6-Od-6Vp" firstAttribute="leading" secondItem="uTS-pq-ykj" secondAttribute="leading" id="WVd-zJ-cV8"/>
                             <constraint firstItem="vJp-Dg-IRA" firstAttribute="leading" secondItem="uTS-pq-ykj" secondAttribute="leading" id="bnU-QQ-n5t"/>
                             <constraint firstItem="Lr2-eu-E7U" firstAttribute="trailing" secondItem="uTS-pq-ykj" secondAttribute="trailing" id="dyZ-Qd-pOO"/>
@@ -116,7 +116,7 @@
                     </view>
                     <connections>
                         <outlet property="searchBar" destination="nWP-OM-rgx" id="8cV-S9-wgE"/>
-                        <outlet property="searchButtonBottomConstraint" destination="UOh-oL-dEZ" id="6H7-Mc-bwX"/>
+                        <outlet property="searchButtonBottomConstraint" destination="98h-Yr-oMR" id="4ch-PR-0vS"/>
                         <outlet property="wordTableView" destination="vJp-Dg-IRA" id="ITF-vG-PO7"/>
                     </connections>
                 </viewController>

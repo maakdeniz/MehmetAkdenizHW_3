@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import DictionaryAPI
+
 class WordViewController: UIViewController {
     
     //MARK: - IBOutles
@@ -19,9 +19,9 @@ class WordViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let networkService = NetworkService()
+        
         let coreDataService = CoreDataService()
-        viewModel = WordViewModel(networkService: networkService, coreDataService: coreDataService) as? any WordViewModelProtocol
+        viewModel = WordViewModel(coreDataService: coreDataService) as any WordViewModelProtocol
         viewModel.delegate = self
         KeyboardHelper.shared.delegate = self
         configure()
@@ -43,10 +43,10 @@ class WordViewController: UIViewController {
         searchBar.delegate = self
     }
         
-    private func navigateToDetailViewController(with word: Word) {
+    internal func navigateToDetailViewControllera() {
         let detailViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
-        let detailViewModel = DetailViewModel(word: word,
-                                              networkService: NetworkService())
+        guard let word = viewModel.getWord() else { return }
+        let detailViewModel = DetailViewModel(word: word)
         detailViewController.viewModel = detailViewModel
         detailViewController.modalPresentationStyle = .fullScreen
         self.present(detailViewController, animated: true, completion: nil)
@@ -63,11 +63,11 @@ extension WordViewController: WordViewModelDelegate {
         self.wordTableView.reloadData()
     }
     
-    func didUpdateWord(_ viewModel: WordViewModel, word: Word) {
+    func didUpdateWord(_ viewModel: WordViewModel) {
         DispatchQueue.main.async { [self] in
             // Update UI with the new word
             reloadData()
-            self.navigateToDetailViewController(with: word)
+            self.navigateToDetailViewController()
         }
     }
     
@@ -93,8 +93,8 @@ extension WordViewController: WordViewModelDelegate {
             self.showAlert(title: "Error", message: message)
         }
     }
-    func navigateToDetailViewController(word: Word) {
-          navigateToDetailViewController(with: word)
+    func navigateToDetailViewController() {
+        self.navigateToDetailViewControllera()
       }
     
     

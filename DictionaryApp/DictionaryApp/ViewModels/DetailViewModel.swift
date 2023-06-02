@@ -1,33 +1,70 @@
 import Foundation
 import DictionaryAPI
+import AVFoundation
 
-class DetailViewModel {
+
+
+protocol DetailViewModelDelegate: AnyObject {
+    func updateUI()
+    func reloadSynonymsCollectionView()
+    func reloadFilteredCollectionView()
+    func reloadWordMeaningTableView()
+    func audioButtonIsVisibilty()
+}
+
+protocol DetailViewModelProtocol {
+    var delegate: DetailViewModelDelegate? { get set }
+    func getPhonetics() -> [Phonetic]?
+    var onSelectedWordTypesUpdated: (() -> Void)? { get set }
+    var onWordTypesUpdated: (() -> Void)? { get set }
+    func fetchWordDetails(completion: @escaping (Result<Word, Error>) -> Void)
+    func fetchFilteredSynonyms(word: String, completion: @escaping (Result<[Synonym], Error>) -> Void)
+    func isAudioURLValid(completion: @escaping (Bool) -> Void)
+    func playAudio(completion: @escaping (Error?) -> Void)
+    var wordText: String? { get }
+    var phoneticText: String? { get }
+    var numberOfWordTypes: Int { get }
+    func getWordTypes(_ index: Int) -> String?
+    func getCountGroupedDefinitions(_ wordType: String) -> Int
+    func definitionForIndexPath(_ indexPath: IndexPath) -> Definition?
+    func meaningIndexForType(_ type: String, indexPath: IndexPath) -> Int
+    var numberOfFilteredSynonyms: Int { get }
+    var isFiltering: Bool { get set }
+    var selectedWordType: String? { get set }
+    func getCountFilteredSynonyms(_ index: Int) -> Synonym?
+    var selectedWordTypes: [String] { get set }
+    
+    
+}
+
+
+final class DetailViewModel {
     //MARK: - Definations Variables
+    weak var delegate: DetailViewModelDelegate?
+    var player: AVPlayer?
     var word: Word?
     var networkService: NetworkServiceProtocol
     var originalMeanings: [Meaning]?
     var filteredSynonyms: [Synonym] = []
-    var meaningCounts: [String: Int] = [:]
     var wordTypes: [String] = []
     var filteredMeanings: [Meaning]?
     var groupedDefinitions: [String: [Definition]] = [:]
-    var meaningIndices: [String: Int] = [:]
     
     var isFiltering: Bool = false {
-            didSet {
-                if isFiltering {
-                    if !wordTypes.contains("X") {
-                        wordTypes.insert("X", at: 0)
-                    }
-                } else {
-                    if let index = wordTypes.firstIndex(of: "X") {
-                        wordTypes.remove(at: index)
-                    }
+        didSet {
+            if isFiltering {
+                if !wordTypes.contains("X") {
+                    wordTypes.insert("X", at: 0)
                 }
-                onWordTypesUpdated?()
-                onSelectedWordTypesUpdated?()
+            } else {
+                if let index = wordTypes.firstIndex(of: "X") {
+                    wordTypes.remove(at: index)
+                }
             }
+            onWordTypesUpdated?()
+            onSelectedWordTypesUpdated?()
         }
+    }
     var selectedWordType: String? {
         didSet {
             if let selectedWordType = selectedWordType {
@@ -52,10 +89,10 @@ class DetailViewModel {
                 filteredMeanings = originalMeanings
             }
             word?.meanings = filteredMeanings
-
+            
             if let meanings = word?.meanings {
                 var newGroupedDefinitions: [String: [Definition]] = [:]
-
+                
                 for meaning in meanings {
                     if let pos = meaning.partOfSpeech {
                         if newGroupedDefinitions[pos] != nil {
@@ -65,7 +102,7 @@ class DetailViewModel {
                         }
                     }
                 }
-
+                
                 self.groupedDefinitions = newGroupedDefinitions
             }
             onSelectedWordTypesUpdated?()
@@ -77,55 +114,84 @@ class DetailViewModel {
     var phoneticText: String? {
         return word?.phonetic
     }
-//MARK: - Closures
+    //MARK: - Closures
     var onSelectedWordTypesUpdated: (() -> Void)?
     var onWordTypesUpdated: (() -> Void)?
     
-//MARK: - Initiliazer
-    init(word: Word, networkService: NetworkServiceProtocol) {
-            self.word = word
-            self.networkService = networkService
-            self.originalMeanings = word.meanings?.sorted(by: { $0.partOfSpeech ?? "" < $1.partOfSpeech ?? "" })
-            
-            // Her bir Meaning'deki Definition'ları ayırın ve bunları groupedDefinitions'a atayın:
-            if let meanings = word.meanings {
-                for meaning in meanings {
-                    for definition in meaning.definitions {
-                        if let pos = meaning.partOfSpeech {
-                            if groupedDefinitions[pos] != nil {
-                                groupedDefinitions[pos]?.append(definition)
-                            } else {
-                                groupedDefinitions[pos] = [definition]
-                            }
+    //MARK: - Initiliazer
+    init(word: Word) {
+        self.word = word
+        self.networkService = NetworkService()
+        self.originalMeanings = word.meanings?.sorted(by: { $0.partOfSpeech ?? "" < $1.partOfSpeech ?? "" })
+        
+        if let meanings = word.meanings {
+            for meaning in meanings {
+                for definition in meaning.definitions {
+                    if let pos = meaning.partOfSpeech {
+                        if groupedDefinitions[pos] != nil {
+                            groupedDefinitions[pos]?.append(definition)
+                        } else {
+                            groupedDefinitions[pos] = [definition]
                         }
                     }
                 }
             }
         }
+    }
     func numberOfSections() -> Int {
-            return wordTypes.count
-        }
+        return wordTypes.count
+    }
     func numberOfRowsInSection(_ section: Int) -> Int {
-            let partOfSpeech = wordTypes[section]
-            return groupedDefinitions[partOfSpeech]?.count ?? 0
-        }
+        let partOfSpeech = wordTypes[section]
+        return groupedDefinitions[partOfSpeech]?.count ?? 0
+    }
     func definitionForIndexPath(_ indexPath: IndexPath) -> Definition? {
-            let partOfSpeech = wordTypes[indexPath.section]
-            let definitions = groupedDefinitions[partOfSpeech]
-            let definition = definitions?[indexPath.row]
-            return definition
-        }
+        let partOfSpeech = wordTypes[indexPath.section]
+        let definitions = groupedDefinitions[partOfSpeech]
+        let definition = definitions?[indexPath.row]
+        return definition
+    }
     func meaningIndexForType(_ type: String, indexPath: IndexPath) -> Int {
-          return indexPath.row + 1
-      }
+        return indexPath.row + 1
+    }
+    
+    func playAudio(completion: @escaping (Error?) -> Void) {
+        guard let phonetics = getPhonetics() else {
+            print("No phonetics available")
+            return
+        }
+        
+        for phonetic in phonetics {
+            if let urlString = phonetic.audio,
+               let url = URL(string: urlString) {
+                var request = URLRequest(url: url)
+                request.httpMethod = "HEAD"
+                request.timeoutInterval = 1.0
+                
+                let task = URLSession.shared.dataTask(with: request) { [weak self] (_, response, error) in
+                    if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+                        DispatchQueue.main.async {
+                            self?.player = AVPlayer(url: url)
+                            self?.player?.play()
+                        }
+                        completion(nil)
+                        return
+                    }
+                    completion(error)
+                }
+                task.resume()
+            }
+        }
+    }
+    
     func isAudioURLValid(completion: @escaping (Bool) -> Void) {
         guard let phonetics = word?.phonetics else {
             completion(false)
             return
         }
-
+        
         let dispatchGroup = DispatchGroup()
-
+        
         var validURLExists = false
         for phonetic in phonetics {
             if let urlString = phonetic.audio, let url = URL(string: urlString) {
@@ -133,7 +199,7 @@ class DetailViewModel {
                 var request = URLRequest(url: url)
                 request.httpMethod = "HEAD"
                 request.timeoutInterval = 1.0
-
+                
                 let task = URLSession.shared.dataTask(with: request) { (_, response, error) in
                     if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
                         validURLExists = true
@@ -143,18 +209,18 @@ class DetailViewModel {
                 task.resume()
             }
         }
-
+        
         dispatchGroup.notify(queue: .main) {
             completion(validURLExists)
         }
     }
-
+    
     //MARK: - Network Functions
     func fetchWordDetails(completion: @escaping (Result<Word, Error>) -> Void) {
         guard let word = word else { return }
         let urlString = "https://api.dictionaryapi.dev/api/v2/entries/en/\(String(describing: word.word))"
         guard let url = URL(string: urlString) else { return }
-
+        
         networkService.get(url: url) { data, error in
             if let error = error {
                 completion(.failure(error))
@@ -202,4 +268,39 @@ class DetailViewModel {
             }
         }
     }
+}
+
+
+extension DetailViewModel: DetailViewModelProtocol {
+    func getCountFilteredSynonyms(_ index: Int) -> Synonym? {
+        if index >= 0 && index < numberOfFilteredSynonyms {
+            return filteredSynonyms[index]
+        }
+        return nil
+    }
+    
+    var numberOfFilteredSynonyms: Int {
+        filteredSynonyms.count
+    }
+    
+    func getCountGroupedDefinitions(_ wordType: String) -> Int {
+        return groupedDefinitions[wordType]?.count ?? 0
+    }
+    
+    func getWordTypes(_ index: Int) -> String? {
+        if index >= 0 && index < numberOfWordTypes {
+            return wordTypes[index]
+        }
+        return nil
+    }
+    
+    var numberOfWordTypes: Int {
+        wordTypes.count
+    }
+    
+    func getPhonetics() -> [Phonetic]? {
+        return word?.phonetics
+    }
+    
+    
 }

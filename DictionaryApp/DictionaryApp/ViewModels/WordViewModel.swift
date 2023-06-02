@@ -2,9 +2,9 @@ import Foundation
 import DictionaryAPI
 
 protocol WordViewModelDelegate: AnyObject {
-    func didUpdateWord(_ viewModel: WordViewModel, word: Word)
+    func didUpdateWord(_ viewModel: WordViewModel)
     func didFailWithError(_ viewModel: WordViewModel, error: Error)
-    func navigateToDetailViewController(word: Word)
+    func navigateToDetailViewController()
     func reloadData()
 }
 
@@ -12,20 +12,26 @@ protocol WordViewModelProtocol {
     var delegate: WordViewModelDelegate? { get set }
     var searchHistory: [String] { get }
     
+    func getWord() -> Word?
     func fetchWord(_ word: String)
     func searchWord(word: String)
-    func navigateToDetail(word: Word)
+    func navigateToDetail()
 }
 
 class WordViewModel: WordViewModelProtocol {
+    func getWord() -> Word? {
+        return word
+    }
+    
     let networkService: NetworkServiceProtocol
     private var coreDataService: CoreDataService
+    var word: Word?
     
     weak var delegate: WordViewModelDelegate?
     var searchHistory: [String] = []
     
-    init(networkService: NetworkServiceProtocol, coreDataService: CoreDataService) {
-        self.networkService = networkService
+    init(coreDataService: CoreDataService) {
+        self.networkService = NetworkService()
         self.coreDataService = coreDataService
         self.searchHistory = coreDataService.getSearchHistory() ?? []
     }
@@ -57,10 +63,11 @@ class WordViewModel: WordViewModelProtocol {
                     guard let word = wordData.first else {
                         return
                     }
+                    self.word = word
                     self.coreDataService.saveSearchHistory(word.word)
                     self.coreDataService.deleteOldWords()
                     self.searchHistory = self.coreDataService.getSearchHistory() ?? []
-                    self.delegate?.didUpdateWord(self, word: word)
+                    self.delegate?.didUpdateWord(self)
                 }
             } else {
                 self.delegate?.didFailWithError(self, error: NSError(domain: "NetworkServiceError", code: -2, userInfo: [NSLocalizedDescriptionKey: "Unable to decode response"]))
@@ -74,8 +81,8 @@ class WordViewModel: WordViewModelProtocol {
     func searchWord(word: String) {
             fetchWord(word)
         }
-    func navigateToDetail(word: Word) {
-           delegate?.navigateToDetailViewController(word: word)
+    func navigateToDetail() {
+           delegate?.navigateToDetailViewController()
        }
     
 }

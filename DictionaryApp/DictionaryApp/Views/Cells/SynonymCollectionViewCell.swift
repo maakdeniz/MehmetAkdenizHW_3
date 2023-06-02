@@ -9,6 +9,5 @@ import UIKit
 
 class SynonymCollectionViewCell: UICollectionViewCell {
     
-    
     @IBOutlet weak var synonymCellLabel: UILabel!
 }
