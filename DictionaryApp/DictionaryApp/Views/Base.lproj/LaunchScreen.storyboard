@@ -16,18 +16,19 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="WORD SEARCH" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P97-Ur-uOP">
-                                <rect key="frame" x="97.000000000000014" y="409.33333333333331" width="199.33333333333337" height="33.666666666666686"/>
-                                <fontDescription key="fontDescription" type="italicSystem" pointSize="28"/>
-                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="searchWordIcon" translatesAutoresizingMaskIntoConstraints="NO" id="pS4-lz-TuX">
+                                <rect key="frame" x="71.666666666666686" y="301" width="250" height="250"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="250" id="MAc-QX-uXv"/>
+                                    <constraint firstAttribute="height" constant="250" id="wtv-hg-x6t"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="P97-Ur-uOP" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="UaB-V6-gUX"/>
-                            <constraint firstItem="P97-Ur-uOP" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="qJN-19-N78"/>
+                            <constraint firstItem="pS4-lz-TuX" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="BNN-Q3-Xiv"/>
+                            <constraint firstItem="pS4-lz-TuX" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="eNK-Vs-rqi"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -37,6 +38,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="searchWordIcon" width="1000" height="988"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
