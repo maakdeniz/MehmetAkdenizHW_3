@@ -27,7 +27,7 @@ struct CoreDataService {
             let result = try context.fetch(request)
             return result.compactMap { $0.word }
         } catch {
-            print("Failed to fetch words: \(error)")
+            
             return nil
         }
     }
@@ -50,7 +50,7 @@ struct CoreDataService {
             }
             try context.save()
         } catch {
-            print("Failed saving: \(error)")
+            
         }
     }
 
@@ -64,7 +64,7 @@ struct CoreDataService {
                 context.delete(results.first as! NSManagedObject)
             }
         } catch {
-            print("Error with request: \(error)")
+            
         }
     }
 }

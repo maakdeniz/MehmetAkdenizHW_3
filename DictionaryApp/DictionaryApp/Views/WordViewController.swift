@@ -136,7 +136,7 @@ extension WordViewController: UITableViewDelegate, UITableViewDataSource {
             cell.rightButton.addTarget(self, action: #selector(goToDetails), for: .touchUpInside)
             return cell
         } else {
-            return UITableViewCell() //
+            return UITableViewCell() 
         }
     }
     //MARK: - objc functions

@@ -21,6 +21,7 @@ class WordDetailTableViewCell: UITableViewCell {
     }
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+        selectionStyle = .none
     }
     override func prepareForReuse() {
         super.prepareForReuse()

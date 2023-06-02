@@ -157,7 +157,7 @@ final class DetailViewModel {
     
     func playAudio(completion: @escaping (Error?) -> Void) {
         guard let phonetics = getPhonetics() else {
-            print("No phonetics available")
+            
             return
         }
         
@@ -240,7 +240,7 @@ final class DetailViewModel {
                         completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Word details not found"])))
                     }
                 } catch let error {
-                    print("Failed to decode: \(error)")
+                    
                     completion(.failure(error))
                 }
             }

@@ -11,7 +11,7 @@ protocol WordViewModelDelegate: AnyObject {
 protocol WordViewModelProtocol {
     var delegate: WordViewModelDelegate? { get set }
     var searchHistory: [String] { get }
-    
+
     func getWord() -> Word?
     func fetchWord(_ word: String)
     func searchWord(word: String)

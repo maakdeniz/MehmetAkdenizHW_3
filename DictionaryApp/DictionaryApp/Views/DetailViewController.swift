@@ -36,7 +36,7 @@ class DetailViewController: UIViewController {
     @IBAction func audioButtonTapped(_ sender: Any) {
         viewModel.playAudio { error in
                 if let error = error {
-                    print("Error playing audio: \(error)")
+
                 }
             }
        }
@@ -73,11 +73,11 @@ class DetailViewController: UIViewController {
         }
         viewModel.fetchWordDetails { [weak self] result in
             switch result {
-            case .failure(let error):
-                print("Failed to fetch word details: \(error)")
-            case .success(let word):
+            case .failure(_): break
+                
+            case .success(_):
                 DispatchQueue.main.async {
-                    print("Successfully fetched word details: \(word)")
+
                     self?.updateUI()
                     self?.audioButtonIsVisibilty()
                 }
@@ -86,11 +86,11 @@ class DetailViewController: UIViewController {
         if let word = viewModel.wordText {
             viewModel.fetchFilteredSynonyms(word: word) { [weak self] result in
                 switch result {
-                case .failure(let error):
-                    print("Failed to fetch synonyms: \(error)")
+                case .failure(_): break
+                    
                 case .success(_):
                     DispatchQueue.main.async {
-                        //print("Successfully fetched synonyms: \(synonyms)")
+                        
                         self?.reloadSynonymsCollectionView()
                     }
                 }
@@ -157,6 +157,14 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
             cell.configure(with: definition, count: count, partOfSpeech: partOfSpeech ?? "")
         }
         return cell
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        wordMeaningTableView.allowsSelection = false
+        wordMeaningTableView.isScrollEnabled = true
+        
+    }
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
     }
 }
 //MARK: - Tableview Extesion
