@@ -31,12 +31,11 @@ class DetailViewController: UIViewController {
         configureViewModel()
     }
     
-
     //MARK: - IBAction Functions
     @IBAction func audioButtonTapped(_ sender: Any) {
         viewModel.playAudio { error in
                 if let error = error {
-
+                    print(error)
                 }
             }
        }
@@ -107,6 +106,7 @@ class DetailViewController: UIViewController {
 }
 
 extension DetailViewController: DetailViewModelDelegate {
+    
     func audioButtonIsVisibilty() {
         self.viewModel.isAudioURLValid { isValid in
             DispatchQueue.main.async {
@@ -130,9 +130,6 @@ extension DetailViewController: DetailViewModelDelegate {
     func reloadWordMeaningTableView() {
         wordMeaningTableView.reloadData()
     }
-    
-
-    
     
 }
 
@@ -161,11 +158,10 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         wordMeaningTableView.allowsSelection = false
         wordMeaningTableView.isScrollEnabled = true
-        
     }
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
+            return UITableView.automaticDimension
+        }
 }
 //MARK: - Tableview Extesion
 extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {

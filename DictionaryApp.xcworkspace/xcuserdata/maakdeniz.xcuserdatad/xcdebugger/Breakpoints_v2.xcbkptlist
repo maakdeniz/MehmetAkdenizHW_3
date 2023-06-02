@@ -3,4 +3,134 @@
    uuid = "608AB5F0-7011-48E8-A7B6-421B814FBAE6"
    type = "0"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "81EDE7A0-80D4-4781-A1B2-8798C22D0F09"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DictionaryApp/DictionaryApp/Views/Cells/WordDetailTableViewCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "configure(with:count:partOfSpeech:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7C7FAA4C-D801-469F-8AB4-D71E1C0F3A82"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DictionaryApp/DictionaryApp/Views/Cells/WordDetailTableViewCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "31"
+            endingLineNumber = "31"
+            landmarkName = "configure(with:count:partOfSpeech:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "7C7FAA4C-D801-469F-8AB4-D71E1C0F3A82 - 2cfb46144b7d0345"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "DictionaryApp.WordDetailTableViewCell.configure(with: DictionaryAPI.Definition, count: Swift.Int, partOfSpeech: Swift.String) -&gt; ()"
+                  moduleName = "DictionaryApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/maakdeniz/Desktop/MehmetAkdeniz_HW3/DictionaryApp/DictionaryApp/Views/Cells/WordDetailTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30"
+                  offsetFromSymbolStart = "144">
+               </Location>
+               <Location
+                  uuid = "7C7FAA4C-D801-469F-8AB4-D71E1C0F3A82 - 2cfb46144b7d0345"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "DictionaryApp.WordDetailTableViewCell.configure(with: DictionaryAPI.Definition, count: Swift.Int, partOfSpeech: Swift.String) -&gt; ()"
+                  moduleName = "DictionaryApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/maakdeniz/Desktop/MehmetAkdeniz_HW3/DictionaryApp/DictionaryApp/Views/Cells/WordDetailTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30"
+                  offsetFromSymbolStart = "160">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0FC2D968-685C-41E5-AE23-ECFFCDD9A9B4"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DictionaryApp/DictionaryApp/Views/DetailViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
+            landmarkName = "tableView(_:cellForRowAt:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "0FC2D968-685C-41E5-AE23-ECFFCDD9A9B4 - 330426884017329b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "DictionaryApp.DetailViewController.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  moduleName = "DictionaryApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/maakdeniz/Desktop/MehmetAkdeniz_HW3/DictionaryApp/DictionaryApp/Views/DetailViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "154"
+                  endingLineNumber = "154"
+                  offsetFromSymbolStart = "420">
+               </Location>
+               <Location
+                  uuid = "0FC2D968-685C-41E5-AE23-ECFFCDD9A9B4 - 330426884017329b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "DictionaryApp.DetailViewController.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  moduleName = "DictionaryApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/maakdeniz/Desktop/MehmetAkdeniz_HW3/DictionaryApp/DictionaryApp/Views/DetailViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "154"
+                  endingLineNumber = "154"
+                  offsetFromSymbolStart = "656">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9C7D649C-FCD7-4741-958B-D33097A1D419"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DictionaryApp/DictionaryApp/Views/Cells/WordDetailTableViewCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "configure(with:count:partOfSpeech:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

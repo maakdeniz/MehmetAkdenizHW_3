@@ -9,24 +9,24 @@ protocol WordViewModelDelegate: AnyObject {
 }
 
 protocol WordViewModelProtocol {
+    
     var delegate: WordViewModelDelegate? { get set }
     var searchHistory: [String] { get }
-
     func getWord() -> Word?
     func fetchWord(_ word: String)
     func searchWord(word: String)
     func navigateToDetail()
 }
 
-class WordViewModel: WordViewModelProtocol {
+
+final class WordViewModel: WordViewModelProtocol {
     func getWord() -> Word? {
         return word
     }
-    
+
     let networkService: NetworkServiceProtocol
     private var coreDataService: CoreDataService
     var word: Word?
-    
     weak var delegate: WordViewModelDelegate?
     var searchHistory: [String] = []
     
@@ -39,7 +39,7 @@ class WordViewModel: WordViewModelProtocol {
     enum FetchWordError: Error {
         case wordNotFound
     }
-    
+    //MARK: - Network Function
     func fetchWord(_ word: String) {
         guard let url = URL(string: "https://api.dictionaryapi.dev/api/v2/entries/en/\(word)") else {
             delegate?.didFailWithError(self, error: NSError(domain: "NetworkServiceError", code: -1, userInfo: [NSLocalizedDescriptionKey : "Invalid URL"]))
@@ -76,7 +76,6 @@ class WordViewModel: WordViewModelProtocol {
             self.delegate?.didFailWithError(self, error: NSError(domain: "NetworkServiceError", code: -3, userInfo: [NSLocalizedDescriptionKey: "No data received"]))
         }
     }
-    
     
     func searchWord(word: String) {
             fetchWord(word)

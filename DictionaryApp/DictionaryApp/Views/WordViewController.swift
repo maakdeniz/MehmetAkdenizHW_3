@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WordViewController: UIViewController {
+class WordViewController: UIViewController, LoadingShowable {
     
     //MARK: - IBOutles
     @IBOutlet weak var searchBar: UISearchBar!
@@ -17,6 +17,7 @@ class WordViewController: UIViewController {
     //MARK: - Variables Definatios
     public var viewModel: WordViewModelProtocol!
     
+    // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -25,6 +26,7 @@ class WordViewController: UIViewController {
         viewModel.delegate = self
         KeyboardHelper.shared.delegate = self
         configure()
+        
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -33,6 +35,7 @@ class WordViewController: UIViewController {
     
     //MARK: - IBAction Func.
     @IBAction func searchButtonTapped(_ sender: UIButton) {
+        self.showLoading()
         viewModel.searchWord(word: searchBar.text ?? "")
     }
     
@@ -42,14 +45,15 @@ class WordViewController: UIViewController {
         wordTableView.delegate = self
         searchBar.delegate = self
     }
-        
     internal func navigateToDetailViewControllera() {
+        
         let detailViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
         guard let word = viewModel.getWord() else { return }
         let detailViewModel = DetailViewModel(word: word)
         detailViewController.viewModel = detailViewModel
         detailViewController.modalPresentationStyle = .fullScreen
         self.present(detailViewController, animated: true, completion: nil)
+        self.hideLoading()
     }
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -58,6 +62,7 @@ class WordViewController: UIViewController {
     }
 }
 
+//MARK: - WordViewModelDelegate Functions
 extension WordViewController: WordViewModelDelegate {
     func reloadData() {
         self.wordTableView.reloadData()
@@ -65,8 +70,8 @@ extension WordViewController: WordViewModelDelegate {
     
     func didUpdateWord(_ viewModel: WordViewModel) {
         DispatchQueue.main.async { [self] in
-            // Update UI with the new word
             reloadData()
+            self.showLoading()
             self.navigateToDetailViewController()
         }
     }
@@ -90,14 +95,13 @@ extension WordViewController: WordViewModelDelegate {
             } else {
                 message = error.localizedDescription
             }
+            self.hideLoading()
             self.showAlert(title: "Error", message: message)
         }
     }
     func navigateToDetailViewController() {
         self.navigateToDetailViewControllera()
       }
-    
-    
 }
 
 //MARK: - Keyboard Delegate
@@ -141,6 +145,7 @@ extension WordViewController: UITableViewDelegate, UITableViewDataSource {
     }
     //MARK: - objc functions
     @objc func goToDetails(_ sender: UIButton) {
+        self.showLoading()
         let wordString = viewModel.searchHistory[sender.tag]
         viewModel.fetchWord(wordString)
     }

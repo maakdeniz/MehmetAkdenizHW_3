@@ -26,6 +26,7 @@ class WordDetailTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
     }
+    //MARK: - TableViewCell Configure Function
     func configure(with definition: Definition, count: Int, partOfSpeech: String) {
         partOfSpeechLabel.text = "\(count) - \(partOfSpeech.capitalized)"
         definitionLabel.text = definition.definition
@@ -33,6 +34,7 @@ class WordDetailTableViewCell: UITableViewCell {
             mockExampleLabel.isHidden = false
             mockExampleLabel.text = "Example"
             exampleLabel.text = example
+            exampleLabel.isHidden = false
         } else {
             mockExampleLabel.isHidden = true
             mockExampleLabel.text = nil

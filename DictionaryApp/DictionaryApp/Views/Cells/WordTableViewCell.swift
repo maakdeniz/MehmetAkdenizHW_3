@@ -9,11 +9,7 @@ import UIKit
 
 class WordTableViewCell: UITableViewCell {
 
-    
-    
     @IBOutlet weak var wordLabel: UILabel!
     @IBOutlet weak var rightButton: UIButton!
-
-
 
 }

@@ -2,8 +2,6 @@ import Foundation
 import DictionaryAPI
 import AVFoundation
 
-
-
 protocol DetailViewModelDelegate: AnyObject {
     func updateUI()
     func reloadSynonymsCollectionView()
@@ -33,10 +31,8 @@ protocol DetailViewModelProtocol {
     var selectedWordType: String? { get set }
     func getCountFilteredSynonyms(_ index: Int) -> Synonym?
     var selectedWordTypes: [String] { get set }
-    
-    
+        
 }
-
 
 final class DetailViewModel {
     //MARK: - Definations Variables
@@ -138,6 +134,7 @@ final class DetailViewModel {
             }
         }
     }
+    // MARK: - TableView Functions
     func numberOfSections() -> Int {
         return wordTypes.count
     }
@@ -155,6 +152,7 @@ final class DetailViewModel {
         return indexPath.row + 1
     }
     
+    //MARK: - Audio Button Operations
     func playAudio(completion: @escaping (Error?) -> Void) {
         guard let phonetics = getPhonetics() else {
             
@@ -270,7 +268,7 @@ final class DetailViewModel {
     }
 }
 
-
+// MARK: - DetailViewModel Protocol Functions
 extension DetailViewModel: DetailViewModelProtocol {
     func getCountFilteredSynonyms(_ index: Int) -> Synonym? {
         if index >= 0 && index < numberOfFilteredSynonyms {
@@ -301,6 +299,4 @@ extension DetailViewModel: DetailViewModelProtocol {
     func getPhonetics() -> [Phonetic]? {
         return word?.phonetics
     }
-    
-    
 }
